@@ -41,6 +41,19 @@ and for tilesets respectivly:
 
 `Godot Tileset format (*.tres)`
 
+### Nice to know! (...if something doesn't work)
+
+It's better to keep the Tiled files in the same folder as the exported ones since than all the paths will
+be the same as in your Godot project.
+
+When you re export a map Godot only needs to reload the scene. You can add something like this in your
+godot script:
+
+```
+if Input.is_action_just_pressed("reload_scene"):
+ 	get_tree().reload_current_scene()
+```
+Don't forget to add a key/mouse/controller mapping for the "reload_scene" action ;)
 
 ## What is supported ?
 
@@ -52,11 +65,21 @@ The Atlas needs a region and tile size - these are automatically taken from the 
 Tilesets with collision information.
 Tilemap layers - each layer will be a subscene resource in the main .tscn
 
-## What's long term
+## What's the long term?
 I'm making a 2D platformer and I'm gonna focus on these needs for now.
 Generally i would like to support everything Tiled offers because it's a very good level editor.
 
 If you are using the plugins and have some problems or feature request or found some bugs.
 Just open an issue here in the gitHub repo.
 
-Cheers!
+## Contact me:
+
+**Tiled forum:**
+
+https://discourse.mapeditor.org/t/tiled-editor-map-and-tileset-integration-with-godot-3-2/4347
+
+**Reddit topic:**
+
+https://www.reddit.com/r/godot/comments/f1wh4a/tiled_editor_map_and_tileset_integration_with/
+
+**Cheers! And happy game making with Godot.**
