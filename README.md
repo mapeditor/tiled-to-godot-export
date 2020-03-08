@@ -43,7 +43,7 @@ and for tilesets respectivly:
 
 ### Nice to know! (...if something doesn't work)
 
-It's better to keep the Tiled files in the same folder as the exported ones since than all the paths will
+It's better to keep the Tiled files in the same folder as the exported ones since then all the paths will
 be the same as in your Godot project.
 
 When you re export a map Godot only needs to reload the scene. You can add something like this in your
@@ -54,6 +54,12 @@ if Input.is_action_just_pressed("reload_scene"):
  	get_tree().reload_current_scene()
 ```
 Don't forget to add a key/mouse/controller mapping for the "reload_scene" action ;)
+
+If you want to debug something you can use the utils.js
+There are three usefull functions:
+ - log() - shortcut for the console.log (infinite parameters)
+ - logf() - logs with flattening circular objects (single parameter)
+ - logk() - logs the keys of a object (single parameter)
 
 ## What is supported ?
 

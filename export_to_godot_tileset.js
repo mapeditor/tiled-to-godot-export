@@ -14,8 +14,6 @@ const GodotExporter = (function () {
         log(this.tileset.tileCount);
         log("--- tileset end ---");
 
-        log("regionWidth, regionHeight: ", regionWidth, regionHeight)
-
         this.tileset.tiles.forEach((tile, index) => {
             // log("tile id: " + tile.id);
             // if(tile.objectGroup.objects.length > 0){

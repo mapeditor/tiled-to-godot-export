@@ -21,7 +21,6 @@ var customTileMapFormat = {
 
                 let boundingRect = layer.region().boundingRect;
 
-
                 for (y = boundingRect.y; y < boundingRect.height; ++y) {
                     for (x = boundingRect.x; x < boundingRect.width; ++x) {
 
@@ -41,7 +40,7 @@ var customTileMapFormat = {
             }
         }
 
-        // Remove trailling commas and blank
+        // Remove trailing commas and blank
         poolIntArrayString = poolIntArrayString.replace(/,\s*$/, "");
 
         var tileMapName = "TileMap";
@@ -56,8 +55,7 @@ var customTileMapFormat = {
     },
 
     getSceneTemplate: function(tileMapName, tilesets, poolIntArrayString){
-let template =
-`[gd_scene load_steps=2 format=2]
+        return `[gd_scene load_steps=2 format=2]
 ${tilesets}
 
 [node name="Node2D" type="Node2D"]
@@ -68,15 +66,12 @@ cell_size = Vector2( 16, 16 )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 format = 1
 tile_data = PoolIntArray( ${poolIntArrayString} )
-`
-return template;
+`;
 ;
     },
     getTilesetResourceTemplate: function(id, path) {
-let template =
-`[ext_resource path="res://${path}" type="TileSet" id=${id}]
-`
-return template;
+        return `[ext_resource path="res://${path}" type="TileSet" id=${id}]
+`;
     }
 
 }
