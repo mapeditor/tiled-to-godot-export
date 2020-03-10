@@ -13,16 +13,36 @@ More information about this:
 
 https://github.com/mapeditor/tiled-extensions
 
+## Installation
+
+When you want to add these plugins to your Tiled installation:
+
+* Open Tiled and go to _Edit > Preferences > Plugins_ and click the "Open"
+  button to open the extensions directory.
+
+* [Download](https://github.com/MikeMnD/tiled-to-godot-export/archive/master.zip)
+  the files in this repository and extract them to that location. The scripts
+  can be placed either directly in the extensions directory or in a
+  subdirectory.
+
+  (Alternatively, clone this git repository into the extensions directory)
+  
+  Tiled extension directory is:
+  
+  - **Windows**
+   `C:/Users/<USER>/AppData/Local/Tiled/extensions/`
+  - **macOS**
+  `~/Library/Preferences/Tiled/extensions/`
+  - **Linux**	
+  `~/.config/tiled/extensions/`
+
+* When using a version older than Tiled 1.3.3, restart Tiled.
+
+  (This was necessary because Tiled only watched existing scripts for
+  changes. No restarts are necessary when making changes to existing script
+  files, since it will trigger an automatic reloading of the scripts.)
+
 ## How to use this extensions
-
-First you need to put them in Tiled extension directory.
-
-- **Windows**
- `C:/Users/<USER>/AppData/Local/Tiled/extensions/`
-- **macOS**
-`~/Library/Preferences/Tiled/extensions/`
-- **Linux**	
-`~/.config/tiled/extensions/`
 
 After you open a Tilemap or Tileset you need to add this custom property:
 `"projectRoot" : string`
@@ -33,7 +53,7 @@ This is needed so when you export to a subfolder in your Godot project all the r
 paths for the resources `(res://)` are set correctly and relative to the custom property 
 you've added `"projectRoot"`;
 
-If everything is fine when you go to **File -> Export As**, a new option should exist:
+If everything is fine when you go to _File_ -> _Export As_, a new option should exist:
 
 `Gotod Tilemap format (*.tscn)`
 
