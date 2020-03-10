@@ -91,7 +91,7 @@ The Atlas needs a region and tile size - these are automatically taken from the 
 Alternative is: [Godot Import Plugin for Tiled Map Editor](https://github.com/vnen/godot-tiled-importer)
 But beware it's a bit old and has some performance issues since it makes single tiles.
 More about my struggles can be read in Tiled Forum or Godot redit.
-Check the [Contact section](#-contacts).
+Check the Contact section.
 
 ## Features list:
 
