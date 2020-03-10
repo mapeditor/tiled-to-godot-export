@@ -1,5 +1,5 @@
 /*global tiled, TextFile */
-class GodotExporter {
+class GodotTilesetExporter {
 
     constructor(tileset, fileName) {
         this.tileset = tileset;
@@ -141,7 +141,7 @@ const customTilesetFormat = {
     extension: "tres",
 
     write: function (tileset, fileName) {
-        const exporter = new GodotExporter(tileset, fileName);
+        const exporter = new GodotTilesetExporter(tileset, fileName);
         exporter.write();
     }
 };

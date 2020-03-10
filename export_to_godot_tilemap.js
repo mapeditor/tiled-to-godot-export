@@ -1,36 +1,53 @@
-var customTileMapFormat = {
-    name: "Godot Tilemap format",
-    extension: "tscn",
+/*global tiled, TextFile */
+class GodotTilemapExporter {
 
-    write: function(map, fileName) {
+    constructor(map, fileName) {
+        this.map = map;
+        this.fileName = fileName;
+        // noinspection JSUnresolvedFunction
+        this.projectRoot = this.map.property("projectRoot");
+    };
 
+    _tileOffset = 65536;
+
+    write(map, fileName) {
+
+        // noinspection JSUnresolvedFunction
         let projectRoot = map.property("projectRoot");
         let poolIntArrayString = '';
         let tilesets = '';
 
+        // noinspection JSUnresolvedVariable
         map.tilesets.forEach((tileset,index)=> {
             let tilesetId = index + 1;
+            // noinspection JSUnresolvedVariable
             let tilesetPath = tileset.asset.fileName.replace(projectRoot, "").replace('.tsx', '.tres');
-            tilesets += customTileMapFormat.getTilesetResourceTemplate(tilesetId, tilesetPath); 
+            tilesets += customTileMapFormat.getTilesetResourceTemplate(tilesetId, tilesetPath);
         });
 
-        for (var i = 0; i < map.layerCount; ++i) {
-            var layer = map.layerAt(i);
+        // noinspection JSUnresolvedVariable
+        for (let i = 0; i < map.layerCount; ++i) {
 
+            // noinspection JSUnresolvedFunction
+            let layer = map.layerAt(i);
+
+            // noinspection JSUnresolvedVariable
             if (layer.isTileLayer) {
 
+                // noinspection JSUnresolvedVariable
                 let boundingRect = layer.region().boundingRect;
 
-                for (y = boundingRect.y; y < boundingRect.height; ++y) {
-                    for (x = boundingRect.x; x < boundingRect.width; ++x) {
+                for (let y = boundingRect.y; y < boundingRect.height; ++y) {
+                    for (let x = boundingRect.x; x < boundingRect.width; ++x) {
 
+                        // noinspection JSUnresolvedVariable,JSUnresolvedFunction
                         let tileId = layer.cellAt(x, y).tileId;
 
                         //check and dont export blank tiles
                         if(tileId !== -1) {
 
                             // Godot has some strange cordiante using 65536
-                            let firstParam = x + (y * 65536);
+                            let firstParam = x + (y * this._tileOffset);
                             let secondParam = 0;
 
                             poolIntArrayString += firstParam + ", " + secondParam + ", " + tileId + ", ";
@@ -43,18 +60,19 @@ var customTileMapFormat = {
         // Remove trailing commas and blank
         poolIntArrayString = poolIntArrayString.replace(/,\s*$/, "");
 
-        var tileMapName = "TileMap";
+        let tileMapName = "TileMap";
 
-        var file = new TextFile(fileName, TextFile.WriteOnly);
-        var tileMapTemplate = customTileMapFormat.getSceneTemplate(tileMapName, tilesets, poolIntArrayString);
+        // noinspection JSUnresolvedVariable
+        let file = new TextFile(fileName, TextFile.WriteOnly);
+        let tileMapTemplate = customTileMapFormat.getSceneTemplate(tileMapName, tilesets, poolIntArrayString);
 
         file.write(tileMapTemplate);
         file.commit();
         file.close();
 
-    },
+    }
 
-    getSceneTemplate: function(tileMapName, tilesets, poolIntArrayString){
+    getSceneTemplate(tileMapName, tilesets, poolIntArrayString){
         return `[gd_scene load_steps=2 format=2]
 ${tilesets}
 
@@ -67,13 +85,24 @@ cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 format = 1
 tile_data = PoolIntArray( ${poolIntArrayString} )
 `;
-;
-    },
-    getTilesetResourceTemplate: function(id, path) {
+    }
+
+    getTilesetResourceTemplate(id, path) {
         return `[ext_resource path="res://${path}" type="TileSet" id=${id}]
 `;
     }
 
 }
 
+const customTileMapFormat = {
+    name: "Godot Tilemap format",
+    extension: "tscn",
+
+    write: function (map, fileName) {
+        const exporter = new GodotTilemapExporter(map, fileName);
+        exporter.write();
+    }
+};
+
+// noinspection JSUnresolvedFunction
 tiled.registerMapFormat("Godot", customTileMapFormat);
