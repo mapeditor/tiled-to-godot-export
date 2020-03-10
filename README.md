@@ -53,7 +53,7 @@ This is needed so when you export to a subfolder in your Godot project all the r
 paths for the resources `(res://)` are set correctly and relative to the custom property 
 you've added `"projectRoot"`;
 
-If everything is fine when you go to _File_ -> _Export As_, a new option should exist:
+If everything is fine when you go to _File -> Export As_, a new option should exist:
 
 `Gotod Tilemap format (*.tscn)`
 
@@ -76,17 +76,22 @@ if Input.is_action_just_pressed("reload_scene"):
 Don't forget to add a key/mouse/controller mapping for the "reload_scene" action ;)
 
 If you want to debug something you can use the utils.js
-There are three usefull functions:
+There are three useful functions:
  - log() - shortcut for the console.log (infinite parameters)
  - logf() - logs with flattening circular objects (single parameter)
  - logk() - logs the keys of a object (single parameter)
 
-## What is supported ?
+## Why do I use it?
 
 The main focus was easily editing and creating of new maps and tilesets.
 Godot added the ability to create Tilesets with Atlas Tiles.
 This is more efficient than one Tileset object instead of 500 singe tiles.
 The Atlas needs a region and tile size - these are automatically taken from the Tiled editor.
+
+Alternative is: [Godot Import Plugin for Tiled Map Editor](https://github.com/vnen/godot-tiled-importer)
+But beware it's a bit old and has some performance issues since it makes single tiles.
+More about my struggles can be read in Tiled Forum or Godot redit.
+Check the [Contact section](#-contacts).
 
 ## Features list:
 
@@ -111,7 +116,7 @@ Generally i would like to support everything Tiled offers because it's a very go
 If you are using the plugins and have some problems or feature request or found some bugs.
 Just open an issue here in the gitHub repo.
 
-## Contact me:
+## Contacts:
 
 **Tiled forum:**
 
