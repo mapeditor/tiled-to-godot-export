@@ -68,8 +68,21 @@ Godot added the ability to create Tilesets with Atlas Tiles.
 This is more efficient than one Tileset object instead of 500 singe tiles.
 The Atlas needs a region and tile size - these are automatically taken from the Tiled editor.
 
-Tilesets with collision information.
-Tilemap layers - each layer will be a subscene resource in the main .tscn
+## Features list:
+
+- [x] Export Tiled file as a Godot scene. Each layer in Tiled is a TileMap in Godot.
+- [x] Export TileSets from Tiled standalone tileset files.
+- [ ] Orthogonal, isometric, staggered, and hexagonal maps.
+- [ ] Export visibility and opacity from layers.
+- [x] Export collision shapes (based on Tiled object type).
+- [ ] Export occluder shapes (based on Tiled object type).
+- [ ] Export navigation shapes (based on Tiled object type).
+- [ ] Support for one-way collision shapes.
+- [ ] Support for image layers.
+- [ ] Support for object layers, which are exported as StaticBody2D, Area2D or LightOccluder2D for shapes (depending on the type property) and as Sprite for tiles.
+- [ ] Support for group layers, which are exported as Node2Ds.
+- [ ] Custom properties for maps, layers, tilesets, and objects are exported as metadata. Custom properties on tiles can be Exported into the TileSet resource.
+- [ ] Map background Exported as a parallax background
 
 ## What's the long term?
 I'm making a 2D platformer and I'm gonna focus on these needs for now.
