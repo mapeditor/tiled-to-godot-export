@@ -6,30 +6,28 @@ class GodotTilemapExporter {
         this.fileName = fileName;
         // noinspection JSUnresolvedFunction
         this.projectRoot = this.map.property("projectRoot");
+        this.tileOffset = 65536;
+
     };
 
-    _tileOffset = 65536;
+    write() {
 
-    write(map, fileName) {
-
-        // noinspection JSUnresolvedFunction
-        let projectRoot = map.property("projectRoot");
         let poolIntArrayString = '';
         let tilesets = '';
 
         // noinspection JSUnresolvedVariable
-        map.tilesets.forEach((tileset,index)=> {
+        this.map.tilesets.forEach((tileset,index)=> {
             let tilesetId = index + 1;
             // noinspection JSUnresolvedVariable
-            let tilesetPath = tileset.asset.fileName.replace(projectRoot, "").replace('.tsx', '.tres');
-            tilesets += customTileMapFormat.getTilesetResourceTemplate(tilesetId, tilesetPath);
+            let tilesetPath = tileset.asset.fileName.replace(this.projectRoot, "").replace('.tsx', '.tres');
+            tilesets += this.getTilesetResourceTemplate(tilesetId, tilesetPath);
         });
 
         // noinspection JSUnresolvedVariable
-        for (let i = 0; i < map.layerCount; ++i) {
+        for (let i = 0; i < this.map.layerCount; ++i) {
 
             // noinspection JSUnresolvedFunction
-            let layer = map.layerAt(i);
+            let layer = this.map.layerAt(i);
 
             // noinspection JSUnresolvedVariable
             if (layer.isTileLayer) {
@@ -37,8 +35,8 @@ class GodotTilemapExporter {
                 // noinspection JSUnresolvedVariable
                 let boundingRect = layer.region().boundingRect;
 
-                for (let y = boundingRect.y; y < boundingRect.height; ++y) {
-                    for (let x = boundingRect.x; x < boundingRect.width; ++x) {
+                for (let y = boundingRect.top; y <= boundingRect.bottom; ++y) {
+                    for (let x = boundingRect.left; x <= boundingRect.right; ++x) {
 
                         // noinspection JSUnresolvedVariable,JSUnresolvedFunction
                         let tileId = layer.cellAt(x, y).tileId;
@@ -47,7 +45,7 @@ class GodotTilemapExporter {
                         if(tileId !== -1) {
 
                             // Godot has some strange cordiante using 65536
-                            let firstParam = x + (y * this._tileOffset);
+                            let firstParam = x + (y * this.tileOffset);
                             let secondParam = 0;
 
                             poolIntArrayString += firstParam + ", " + secondParam + ", " + tileId + ", ";
@@ -60,22 +58,25 @@ class GodotTilemapExporter {
         // Remove trailing commas and blank
         poolIntArrayString = poolIntArrayString.replace(/,\s*$/, "");
 
+        if(poolIntArrayString === ""){
+            console.error("The tilemap looks empty!");
+        }
+
         let tileMapName = "TileMap";
 
         // noinspection JSUnresolvedVariable
-        let file = new TextFile(fileName, TextFile.WriteOnly);
-        let tileMapTemplate = customTileMapFormat.getSceneTemplate(tileMapName, tilesets, poolIntArrayString);
+        let file = new TextFile(this.fileName, TextFile.WriteOnly);
+        let tileMapTemplate = this.getSceneTemplate(tileMapName, tilesets, poolIntArrayString);
 
         file.write(tileMapTemplate);
         file.commit();
-        file.close();
 
     }
 
     getSceneTemplate(tileMapName, tilesets, poolIntArrayString){
         return `[gd_scene load_steps=2 format=2]
-${tilesets}
 
+${tilesets}
 [node name="Node2D" type="Node2D"]
 
 [node name="${tileMapName}" type="TileMap" parent="."]
