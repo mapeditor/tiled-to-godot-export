@@ -39,6 +39,7 @@ class GodotTilesetExporter {
             // noinspection JSUnresolvedVariable
             if (tile.objectGroup !== null) {
 
+                // noinspection JSUnresolvedVariable
                 let tileObjects = tile.objectGroup.objects;
 
                 // noinspection JSUnresolvedVariable
@@ -50,7 +51,7 @@ class GodotTilesetExporter {
                         // noinspection JSUnresolvedVariable
                         let object = tileObjects[oIndex];
 
-                        //TODO: add occlusions, navigation
+                        //TODO: add occlusions, navigations
                         this.exportCollisions(object, tile, autotileCoordinates);
                     }
                 }
@@ -149,9 +150,13 @@ points = PoolVector2Array( ${coordinateString} )
     }
 
     getCollisionShapeRectangle(id, object) {
-        let tileSize = object.width;
+        const topLeft = {x: object.x, y: object.y};
+        const topRight = {x: (object.x + object.width), y: object.y};
+        const bottomRight = {x: (object.x + object.width), y: (object.y + object.height)};
+        const bottomLeft = {x: object.x, y: (object.y + object.height)};
+
         return `[sub_resource type="ConvexPolygonShape2D" id=${id}]
-points = PoolVector2Array( 0, 0, ${tileSize}, 0, ${tileSize}, ${tileSize}, 0, ${tileSize} )
+points = PoolVector2Array( ${topLeft.x}, ${topLeft.y}, ${topRight.x}, ${topRight.y}, ${bottomRight.x}, ${bottomRight.y}, ${bottomLeft.x}, ${bottomLeft.y} )
 
 `;
     }
