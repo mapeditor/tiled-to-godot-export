@@ -69,16 +69,10 @@ class GodotTilesetExporter {
     exportCollisions(object, tile, autotileCoordinates) {
         // noinspection JSUnresolvedVariable
         if (object.polygon.length > 0) {
-            logf(object.polygon);
-            log("polygon shape - tile id: ", tile.id);
-            log("polygon shape - tile id: ", tile.id);
-            log("polygon shape - tile id: ", tile.id);
-            this.shapesResources += this.getCollisionShapePolygon(tile.id, object.polygon);
+            this.shapesResources += this.getCollisionShapePolygon(tile.id, object);
             this.exportShapes(tile, autotileCoordinates);
         } else if (object.width > 0 && object.height > 0) {
-            logf(object);
-            log("rectangle shape - tile id: ", tile.id);
-            this.shapesResources += this.getCollisionShapeRectangle(tile.id, object.width);
+            this.shapesResources += this.getCollisionShapeRectangle(tile.id, object);
             this.exportShapes(tile, autotileCoordinates);
         }
 
@@ -138,10 +132,13 @@ ${this.shapesResources}[resource]
 }, `;
     }
 
-    getCollisionShapePolygon(id, polygon) {
+    getCollisionShapePolygon(id, object) {
         let coordinateString = "";
-        polygon.forEach((coordinate) => {
-            coordinateString += coordinate.x + ", " + coordinate.y + ", ";
+        // noinspection JSUnresolvedVariable
+        object.polygon.forEach((coordinate) => {
+            let coordinateX = (object.x + coordinate.x);
+            let coordinateY = (object.y + coordinate.y);
+            coordinateString +=  coordinateX + ", " + coordinateY + ", ";
         });
         // Remove trailing commas and blank
         coordinateString = coordinateString.replace(/,\s*$/, "");
@@ -151,7 +148,8 @@ points = PoolVector2Array( ${coordinateString} )
 `;
     }
 
-    getCollisionShapeRectangle(id, tileSize) {
+    getCollisionShapeRectangle(id, object) {
+        let tileSize = object.width;
         return `[sub_resource type="ConvexPolygonShape2D" id=${id}]
 points = PoolVector2Array( 0, 0, ${tileSize}, 0, ${tileSize}, ${tileSize}, 0, ${tileSize} )
 
