@@ -9,7 +9,7 @@ class GodotTilesetExporter {
         this.spriteImagePath = this.tileset.image.replace(this.projectRoot, "");
         this.shapesResources = "";
         this.shapes = "";
-        this.firstShapeID = null;
+        this.firstShapeID = "";
     };
 
     write() {
@@ -19,6 +19,7 @@ class GodotTilesetExporter {
 
         // noinspection JSUnresolvedVariable
         const file = new TextFile(this.fileName, TextFile.WriteOnly);
+        // log(this.tileset.imageWidth, this.tileset.imageHeight);
         let tilesetTemplate = this.getTilesetTemplate();
         file.write(tilesetTemplate);
         file.commit();
@@ -80,7 +81,7 @@ class GodotTilesetExporter {
     }
 
     exportShapes(tile, autotileCoordinates) {
-        if (this.firstShapeID === null) {
+        if (this.firstShapeID === "") {
             this.firstShapeID = tile.id;
         }
         this.shapes += this.getShapesTemplate(

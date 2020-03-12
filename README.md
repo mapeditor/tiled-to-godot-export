@@ -99,7 +99,7 @@ Check the Contact section.
 - [x] Export TileSets from Tiled standalone tileset files.
 - [ ] Orthogonal, isometric, staggered, and hexagonal maps.
 - [ ] Export visibility and opacity from layers.
-- [x] Export collision shapes (based on Tiled object type).
+- [x] Export collision shapes (Only Rectangle and Polygon from Tiled are supported and are converted to polygons in Godot).
 - [ ] Export occluder shapes (based on Tiled object type).
 - [ ] Export navigation shapes (based on Tiled object type).
 - [ ] Support for one-way collision shapes.
