@@ -7,21 +7,34 @@ class GodotTilemapExporter {
         // noinspection JSUnresolvedFunction
         this.projectRoot = this.map.property("projectRoot");
         this.tileOffset = 65536;
-
+        this.tilesetColumns = 0;
+        this.tileset = null;
     };
 
     write() {
 
         let poolIntArrayString = '';
-        let tilesets = '';
+        let tilesetsString = '';
 
         // noinspection JSUnresolvedVariable
-        this.map.tilesets.forEach((tileset,index)=> {
+        for (let index = 0; index < this.map.tilesets.length; ++index) {
+
+            // noinspection JSUnresolvedVariable
+            this.tileset = this.map.tilesets[index];
+
+            /**
+             * Tileset should expose columns ... but didn't at the moment so we
+             * calculate them base on the image width and tileWidth
+             **/
+            // noinspection JSUnresolvedVariable
+            this.tilesetColumns = Math.floor(this.tileset.imageWidth / this.tileset.tileWidth);
+            log("tilesetColumns: ", this.tilesetColumns);
+
             let tilesetId = index + 1;
             // noinspection JSUnresolvedVariable
-            let tilesetPath = tileset.asset.fileName.replace(this.projectRoot, "").replace('.tsx', '.tres');
-            tilesets += this.getTilesetResourceTemplate(tilesetId, tilesetPath);
-        });
+            let tilesetPath = this.tileset.asset.fileName.replace(this.projectRoot, "").replace('.tsx', '.tres');
+            tilesetsString += this.getTilesetResourceTemplate(tilesetId, tilesetPath);
+        }
 
         // noinspection JSUnresolvedVariable
         for (let i = 0; i < this.map.layerCount; ++i) {
@@ -40,15 +53,23 @@ class GodotTilemapExporter {
 
                         // noinspection JSUnresolvedVariable,JSUnresolvedFunction
                         let tileId = layer.cellAt(x, y).tileId;
+                        let tileGodotID = tileId;
 
-                        //check and dont export blank tiles
+                        /** Handle Godot strange offset by rows in the tileset image **/
+                        if(tileId >= this.tilesetColumns) {
+                            let tileY= Math.floor(tileId / this.tilesetColumns);
+                            let tileX = (tileId % this.tilesetColumns);
+                            tileGodotID =  tileX + (tileY * this.tileOffset);
+                        }
+
+                        /** Check and don't export blank tiles **/
                         if(tileId !== -1) {
 
                             // Godot has some strange cordiante using 65536
                             let firstParam = x + (y * this.tileOffset);
                             let secondParam = 0;
 
-                            poolIntArrayString += firstParam + ", " + secondParam + ", " + tileId + ", ";
+                            poolIntArrayString += firstParam + ", " + secondParam + ", " + tileGodotID + ", ";
                         }
                     }
                 }
@@ -66,7 +87,7 @@ class GodotTilemapExporter {
 
         // noinspection JSUnresolvedVariable
         let file = new TextFile(this.fileName, TextFile.WriteOnly);
-        let tileMapTemplate = this.getSceneTemplate(tileMapName, tilesets, poolIntArrayString);
+        let tileMapTemplate = this.getSceneTemplate(tileMapName, tilesetsString, poolIntArrayString);
 
         file.write(tileMapTemplate);
         file.commit();
