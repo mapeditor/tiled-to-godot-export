@@ -5,11 +5,11 @@ class GodotTilesetExporter {
         this.tileset = tileset;
         this.fileName = fileName;
         // noinspection JSUnresolvedFunction
-        this.projectRoot = this.tileset.property("projectRoot");
+        this.projectRoot = this.tileset.property("projectRoot").replace('\\', '/');
         this.spriteImagePath = this.tileset.image.replace(this.projectRoot, "");
         this.shapesResources = "";
         this.shapes = "";
-        this.firstShapeID = "";
+        this.firstShapeID = "0";
     };
 
     write() {
@@ -82,7 +82,7 @@ class GodotTilesetExporter {
 
     exportShapes(tile, autotileCoordinates) {
         if (this.firstShapeID === "") {
-            this.firstShapeID = tile.id;
+            this.firstShapeID =  'SubResource( ' + tile.id + ' )';
         }
         this.shapes += this.getShapesTemplate(
             autotileCoordinates,
@@ -115,7 +115,7 @@ ${this.shapesResources}[resource]
 0/navigation_offset = Vector2( 0, 0 )
 0/shape_offset = Vector2( 0, 0 )
 0/shape_transform = Transform2D( 1, 0, 0, 1, 0, 0 )
-0/shape = SubResource( ${this.firstShapeID} )
+0/shape = ${this.firstShapeID}
 0/shape_one_way = false
 0/shape_one_way_margin = 1.0
 0/shapes = [ ${this.shapes} ]
