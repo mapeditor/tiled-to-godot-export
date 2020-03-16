@@ -181,7 +181,7 @@ class GodotTilemapExporter {
     /**
      * Tileset should expose columns ... but didn't at the moment so we
      * calculate them base on the image width and tileWidth
-     * return {String}
+     * return {number}
      **/
     getTilesetColumns(tileset) {
         // noinspection JSUnresolvedVariable
