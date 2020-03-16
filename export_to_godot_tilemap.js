@@ -34,7 +34,7 @@ class GodotTilemapExporter {
         this.setTilesetsString();
         this.setTileMapsString();
         this.writeToFile();
-        console.info("Tileset export successful.");
+        console.info(`Tilemap exported successfully to ${this.fileName}`);
     }
 
     /**

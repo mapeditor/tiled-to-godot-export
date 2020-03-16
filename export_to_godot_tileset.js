@@ -19,7 +19,7 @@ class GodotTilesetExporter {
     write() {
         this.iterateTiles();
         this.writeToFile();
-        console.info("Tileset export successful.");
+        console.info(`Tileset exported successfully to ${this.fileName}`);
     }
 
     writeToFile() {
