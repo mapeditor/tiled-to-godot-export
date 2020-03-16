@@ -41,9 +41,6 @@ class GodotTilemapExporter {
      * @returns {string}
      */
     setTilesetsString() {
-        log("!!! setTilesetsString !!!");
-        // noinspection JSUnresolvedVariable
-        log("this.map.tilesets.length:", this.map.tilesets.length);
 
         // noinspection JSUnresolvedVariable
         for (let index = 0; index < this.map.tilesets.length; ++index) {
@@ -55,8 +52,6 @@ class GodotTilemapExporter {
             let tilesetPath = tileset.asset.fileName.replace(this.projectRoot, "").replace('.tsx', '.tres');
             this.tilesetsString += this.getTilesetResourceTemplate(tilesetID, tilesetPath);
         }
-
-        log("tilesetsString = ", this.tilesetsString);
 
     }
 
@@ -145,8 +140,6 @@ class GodotTilemapExporter {
                         yValue = y +1;
                     }
                     let firstParam = xValue + (yValue * this.tileOffset);
-
-                    log("x:",xValue,"y:",y," => ", firstParam);
 
                     /**
                      This is texture image form the tileset in godot
