@@ -5,7 +5,11 @@ class GodotTilesetExporter {
         this.tileset = tileset;
         this.fileName = fileName;
         // noinspection JSUnresolvedFunction
-        this.projectRoot = this.tileset.property("projectRoot").replace('\\', '/');
+        this.projectRoot = this.tileset.property("projectRoot");
+        if(!this.projectRoot) {
+            throw new Error("Missing mandatory custom property: projectRoot!");
+        }
+        this.projectRoot = this.projectRoot.replace('\\', '/');
         this.spriteImagePath = this.tileset.image.replace(this.projectRoot, "");
         this.shapesResources = "";
         this.shapes = "";
@@ -13,17 +17,18 @@ class GodotTilesetExporter {
     };
 
     write() {
-
-        // Exports collision shapes ... for now
         this.iterateTiles();
+        this.writeToFile();
+        console.info("Tileset export successful.");
+    }
 
+    writeToFile() {
         // noinspection JSUnresolvedVariable
         const file = new TextFile(this.fileName, TextFile.WriteOnly);
         // log(this.tileset.imageWidth, this.tileset.imageHeight);
         let tilesetTemplate = this.getTilesetTemplate();
         file.write(tilesetTemplate);
         file.commit();
-        // file.close(); //not neede anymore since tiled 1.3.3
     }
 
     iterateTiles() {
