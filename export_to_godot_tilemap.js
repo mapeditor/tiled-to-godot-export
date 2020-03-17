@@ -128,9 +128,11 @@ class GodotTilemapExporter {
                         // noinspection JSUnresolvedFunction
                         tileset = tile.tileset;
                         tilesetColumns = this.getTilesetColumns(tileset);
-                    } else if (!hasWarned && tileset !== tile.tileset) {
-                        tiled.warn(`Multiple tilesets used on layer "${layer.name}", only exporting tiles from "${tileset.name}"`);
-                        hasWarned = true;
+                    } else if (tileset !== tile.tileset) {
+                        if (!hasWarned) {
+                            tiled.warn(`Multiple tilesets used on layer "${layer.name}", only exporting tiles from "${tileset.name}"`);
+                            hasWarned = true;
+                        }
                         continue;
                     }
 
