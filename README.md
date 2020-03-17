@@ -1,3 +1,11 @@
+## !!! Known Issue:
+
+It seems that using the dev build of Tiled the API provides imageWidth and imageHeigh for the tileset,
+but in version 1.3.3 that's nto the case. So if you have a problem loading the tileset in Godot 
+you'll need to manually add the width and height of the image in the ```0/region = Rect2( 0, 0, undefined, undefined )```
+instead the undefined values.
+
+
 # Tiled To Godot Export
 
 Tiled plugins for exporting Tilemaps and Tilesets in Godot 3.2 format
@@ -13,7 +21,6 @@ Tiled plugins for exporting Tilemaps and Tilesets in Godot 3.2 format
   
  And also I made a simple legend explaining the tile encoding in a tilemap.
  * [Godot Tilemap Encoding & Limits](https://docs.google.com/spreadsheets/d/1YbGAVgySB3jr5oKeHHEPHbqmRkrVUs_YN_ftAEaOfBA/)
- 
 
 ## Tiled Extensions
 Tiled can be extended with the use of JavaScript. Scripts can be used to implement custom map formats, custom actions and new tools. Scripts can also automate actions based on signals.
