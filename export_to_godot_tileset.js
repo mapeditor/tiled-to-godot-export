@@ -1,12 +1,13 @@
 /*global tiled, TextFile */
 class GodotTilesetExporter {
 
+    // noinspection DuplicatedCode
     constructor(tileset, fileName) {
         this.tileset = tileset;
         this.fileName = fileName;
         // noinspection JSUnresolvedFunction
         this.projectRoot = this.tileset.property("projectRoot");
-        if(!this.projectRoot) {
+        if (!this.projectRoot) {
             throw new Error("Missing mandatory custom property: projectRoot!");
         }
         this.projectRoot = this.projectRoot.replace('\\', '/');
@@ -90,7 +91,7 @@ class GodotTilesetExporter {
 
     exportShapes(tile, autotileCoordinates) {
         if (this.firstShapeID === "") {
-            this.firstShapeID =  'SubResource( ' + tile.id + ' )';
+            this.firstShapeID = 'SubResource( ' + tile.id + ' )';
         }
         this.shapes += this.getShapesTemplate(
             autotileCoordinates,
@@ -158,7 +159,7 @@ ${this.shapesResources}[resource]
         object.polygon.forEach((coordinate) => {
             let coordinateX = (object.x + coordinate.x);
             let coordinateY = (object.y + coordinate.y);
-            coordinateString +=  coordinateX + ", " + coordinateY + ", ";
+            coordinateString += coordinateX + ", " + coordinateY + ", ";
         });
         // Remove trailing commas and blank
         coordinateString = coordinateString.replace(/,\s*$/, "");

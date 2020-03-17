@@ -1,12 +1,13 @@
 /*global tiled, TextFile */
 class GodotTilemapExporter {
 
+    // noinspection DuplicatedCode
     constructor(map, fileName) {
         this.map = map;
         this.fileName = fileName;
         // noinspection JSUnresolvedFunction
         this.projectRoot = this.map.property("projectRoot");
-        if(!this.projectRoot) {
+        if (!this.projectRoot) {
             throw new Error("Missing mandatory custom property: projectRoot!");
         }
         this.projectRoot = this.projectRoot.replace('\\', '/');
@@ -141,8 +142,8 @@ class GodotTilemapExporter {
                      * */
                     let yValue = y;
                     let xValue = x;
-                    if(xValue < 0) {
-                        yValue = y +1;
+                    if (xValue < 0) {
+                        yValue = y + 1;
                     }
                     let firstParam = xValue + (yValue * this.tileOffset);
 
