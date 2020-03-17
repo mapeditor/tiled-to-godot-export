@@ -52,6 +52,10 @@ When you want to add these plugins to your Tiled installation:
 
 ## How to use this extension
 
+If you prefer watching check the video in YouTube:
+
+[How to export from Tiled To Godot 3.2](https://youtu.be/4jSFAXIa_Lo)
+
 After you open a Tilemap or Tileset you need to add this custom property:
 `"projectRoot" : string` , then set the value to the root project folder of your Godot project.
 For example: `D:/work/GodotProjects/game_one/`
