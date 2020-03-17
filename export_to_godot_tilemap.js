@@ -107,6 +107,8 @@ class GodotTilemapExporter {
 
         let tileset = null;
         let tilesetID = null;
+        let tilesetColumns;
+        let hasWarned = false;
 
         for (let y = boundingRect.top; y <= boundingRect.bottom; ++y) {
             for (let x = boundingRect.left; x <= boundingRect.right; ++x) {
@@ -121,13 +123,16 @@ class GodotTilemapExporter {
                     /**
                      * Set the tileset based on the first tile that is found
                      */
+                    const tile = layer.tileAt(x, y);
                     if (tileset === null) {
                         // noinspection JSUnresolvedFunction
-                        const tile = layer.tileAt(x, y);
                         tileset = tile.tileset;
+                        tilesetColumns = this.getTilesetColumns(tileset);
+                    } else if (!hasWarned && tileset !== tile.tileset) {
+                        tiled.warn(`Multiple tilesets used on layer "${layer.name}", only exporting tiles from "${tileset.name}"`);
+                        hasWarned = true;
+                        continue;
                     }
-
-                    const tilesetColumns = this.getTilesetColumns(tileset);
 
                     /** Handle Godot strange offset by rows in the tileset image **/
                     if (tileId >= tilesetColumns) {
