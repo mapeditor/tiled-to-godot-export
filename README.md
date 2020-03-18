@@ -1,9 +1,10 @@
-## !!! Known Issue:
+## Known Issue!
 
 It seems that using the dev build of Tiled the API provides imageWidth and imageHeigh for the tileset,
-but in version 1.3.3 that's nto the case. So if you have a problem loading the tileset in Godot 
+but in version 1.3.3 that's not the case. So if you have a problem loading the tileset in Godot 
 you'll need to manually add the width and height of the image in the ```0/region = Rect2( 0, 0, undefined, undefined )```
-instead the undefined values.
+instead the undefined values. Probably this will be fixed in next patch release of Tiled.
+Other than that you can download and build the dev branch.
 
 
 # Tiled To Godot Export
