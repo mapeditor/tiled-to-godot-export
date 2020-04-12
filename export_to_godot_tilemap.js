@@ -74,13 +74,14 @@ class GodotTilemapExporter {
             // noinspection JSUnresolvedVariable
             if (layer.isTileLayer) {
                 const layerData = this.getLayerData(layer);
-
-                if (!layerData.isEmpty) {
-                    const tileMapName = layer.name || "TileMap " + i;
-                    this.mapLayerToTileset(layer.name, layerData.tilesetID);
-                    this.tileMapsString += this.getTileMapTemplate(tileMapName, layerData.tilesetID, layerData.poolIntArrayString);
+                for(let idx = 0; idx < layerData.length; idx++) {
+                    const ld = layerData[idx];
+                    if (!ld.isEmpty) {
+                        const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i +"_" + idx;
+                        this.mapLayerToTileset(layer.name, ld.tilesetID);
+                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight);
+                    }
                 }
-
             }
         }
     }
@@ -103,12 +104,8 @@ class GodotTilemapExporter {
     getLayerData(layer) {
         // noinspection JSUnresolvedVariable
         let boundingRect = layer.region().boundingRect;
-        let poolIntArrayString = '';
 
-        let tileset = null;
-        let tilesetID = null;
-        let tilesetColumns;
-        let hasWarned = false;
+        const tilesetList = [];
 
         for (let y = boundingRect.top; y <= boundingRect.bottom; ++y) {
             for (let x = boundingRect.left; x <= boundingRect.right; ++x) {
@@ -119,23 +116,30 @@ class GodotTilemapExporter {
 
                 /** Check and don't export blank tiles **/
                 if (tileId !== -1) {
-
+                    
                     /**
-                     * Set the tileset based on the first tile that is found
+                     * Find the tileset on the list, if not found, add
                      */
                     const tile = layer.tileAt(x, y);
-                    if (tileset === null) {
-                        // noinspection JSUnresolvedFunction
-                        tileset = tile.tileset;
-                        tilesetColumns = this.getTilesetColumns(tileset);
-                    } else if (tileset !== tile.tileset) {
-                        if (!hasWarned) {
-                            tiled.warn(`Multiple tilesets used on layer "${layer.name}", only exporting tiles from "${tileset.name}"`);
-                            hasWarned = true;
-                        }
-                        continue;
+                    
+                    let tileset = tilesetList.find( item => item.tileset === tile.tileset);
+
+                    if (!tileset) {
+                        tileset = {
+                            tileset: tile.tileset,
+                            tilesetID: null,
+                            tilesetColumns: this.getTilesetColumns(tile.tileset),
+                            layer: layer,
+                            isEmpty: tile.tileset === null,
+                            poolIntArrayString: "",
+                            parent: tilesetList.length === 0 ? "." : layer.name
+                        };
+
+                        tilesetList.push(tileset);
                     }
 
+                    const tilesetColumns = tileset.tilesetColumns;
+                    
                     /** Handle Godot strange offset by rows in the tileset image **/
                     if (tileId >= tilesetColumns) {
                         let tileY = Math.floor(tileId / tilesetColumns);
@@ -160,26 +164,26 @@ class GodotTilemapExporter {
                      */
                     let secondParam = 0;
 
-                    poolIntArrayString += firstParam + ", " + secondParam + ", " + tileGodotID + ", ";
+                    tileset.poolIntArrayString += firstParam + ", " + secondParam + ", " + tileGodotID + ", ";
                 }
             }
         }
 
         // Remove trailing commas and blank
-        poolIntArrayString = poolIntArrayString.replace(/,\s*$/, "");
-
-        if (tileset !== null && poolIntArrayString !== "") {
-            tilesetID = this.getTilesetIDByTileset(tileset);
-        } else {
-            console.warn(`Error: The layer ${layer.name} is empty and has been skipped!`);
+        tilesetList.forEach(i => {
+			i.poolIntArrayString = i.poolIntArrayString.replace(/,\s*$/, "");
+        });
+        
+        for(let idx = 0; idx < tilesetList.length; idx++) {
+            const current = tilesetList[idx];
+            if (current.tileset !== null && current.poolIntArrayString !== "") {
+				current.tilesetID = this.getTilesetIDByTileset(current.tileset);
+			} else {
+				console.warn(`Error: The layer ${layer.name} is empty and has been skipped!`);
+			}
         }
 
-        return {
-            layer: layer,
-            isEmpty: tileset === null,
-            tilesetID: tilesetID,
-            poolIntArrayString: poolIntArrayString
-        };
+        return tilesetList;
     }
 
     getTilesetIDByTileset(tileset) {
@@ -222,10 +226,10 @@ ${this.tileMapsString}
      * Template for a tilemap node
      * @returns {string}
      */
-    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString) {
-        return `[node name="${tileMapName}" type="TileMap" parent="."]
+    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, parent = ".", tileWidth = 16, tileHeight = 16) {
+        return `[node name="${tileMapName}" type="TileMap" parent="${parent}"]
 tile_set = ExtResource( ${tilesetID} )
-cell_size = Vector2( 16, 16 )
+cell_size = Vector2( ${tileWidth}, ${tileHeight} )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 format = 1
 tile_data = PoolIntArray( ${poolIntArrayString} )
