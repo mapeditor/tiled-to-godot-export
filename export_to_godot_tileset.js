@@ -110,11 +110,12 @@ class GodotTilesetExporter {
         return Math.floor(this.tileset.imageWidth / this.tileset.tileWidth);
     }
 
-        getTilesetTemplate() {
-        let { imageWidth, imageHeight, tileCount } = this.tileset
+    getTilesetTemplate() {
+        let { name, imageWidth, imageHeight, tileCount, tileWidth, tileHeight } = this.tileset
         if (imageWidth === undefined || imageHeight === undefined) {
-            imageWidth = tileCount
-            imageHeight = tileCount
+            const ratio = tileWidth / tileHeight
+            imageWidth = tileCount * ratio
+            imageHeight = tileCount * ratio
         }
         // noinspection JSUnresolvedVariable
         return `[gd_resource type="TileSet" load_steps=3 format=2]
@@ -122,14 +123,14 @@ class GodotTilesetExporter {
 [ext_resource path="res://${this.spriteImagePath}" type="Texture" id=1]
 
 ${this.shapesResources}[resource]
-0/name = "${this.tileset.name} 0"
+0/name = "${name} 0"
 0/texture = ExtResource( 1 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )
 0/region = Rect2( 0, 0, ${imageWidth}, ${imageHeight} )
 0/tile_mode = 2
 0/autotile/icon_coordinate = Vector2( 0, 0 )
-0/autotile/tile_size = Vector2( ${this.tileset.tileWidth}, ${this.tileset.tileHeight} )
+0/autotile/tile_size = Vector2( ${tileWidth}, ${tileHeight} )
 0/autotile/spacing = 0
 0/autotile/occluder_map = [  ]
 0/autotile/navpoly_map = [  ]
