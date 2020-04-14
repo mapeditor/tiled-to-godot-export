@@ -98,12 +98,11 @@ be the same as in your Godot project.
 
 So, these impose the following limitations when exporting from Tiled:
 
-Each tileset will be exported as a stand-alone Tileset.
-Each Layer should use only tiles from one tileset.
-Each layer will become a Tilemap in Godot with a single Tileset.
-(This is automatically set based on the first tile detected, so if you use more than one tileset in a layer, only the one
-holding the first detected tile will be mapped.)
- 
+* Each tileset will be exported as a stand-alone Tileset.
+* Each Layer should use only tiles from one tileset.
+* Each layer will become a Tilemap in Godot with a single Tileset.
+* If you use more than one tileset in a layer, each tiles from the tileset will be exported as child tilemap
+to the first one.
 
 When you export a map Godot only needs to reload the scene. You can add something like this in your
 godot script:
