@@ -105,7 +105,6 @@ be the same as in your Godot project.
 So, these impose the following limitations when exporting from Tiled:
 
 * Each tileset will be exported as a stand-alone Tileset.
-* Each Layer should use only tiles from one tileset.
 * Each layer will become a Tilemap in Godot with a single Tileset.
 * If you use more than one tileset in a layer, each tiles from the tileset will be exported as child tilemap
 to the first one.
