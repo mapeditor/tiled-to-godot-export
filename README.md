@@ -1,14 +1,3 @@
-## Known Issue!
-
-It seems that using the dev build of Tiled the API provides imageWidth and imageHeigh for the tileset,
-but in version 1.3.3 that's not the case. So if you have a problem loading the tileset in Godot 
-you'll need to manually add the width and height of the image in the ```0/region = Rect2( 0, 0, undefined, undefined )```
-instead the undefined values. Probably this will be fixed in next minor release of Tiled 1.4.
-In the meantime though, they’re already available in the development snapshots, so I’d suggest you should use the latest snapshot.
-https://thorbjorn.itch.io/tiled - the ones with the (snapshot);
-
-
-
 # Tiled To Godot Export
 
 Tiled plugins for exporting Tilemaps and Tilesets in Godot 3.2 format
@@ -17,6 +6,8 @@ Tiled plugins for exporting Tilemaps and Tilesets in Godot 3.2 format
  - export_to_godot_tileset.js
  - utils.js
  
+The plugin requires Tiled version 1.3.4 or newer
+ 
  More information about the Tilemap structure of Godot can be found here:
  
  * [Using Tilemaps](https://docs.godotengine.org/en/stable/tutorials/2d/using_tilemaps.html)
@@ -24,6 +15,19 @@ Tiled plugins for exporting Tilemaps and Tilesets in Godot 3.2 format
   
  And also I made a simple legend explaining the tile encoding in a tilemap.
  * [Godot Tilemap Encoding & Limits](https://docs.google.com/spreadsheets/d/1YbGAVgySB3jr5oKeHHEPHbqmRkrVUs_YN_ftAEaOfBA/)
+
+## Known Issue!
+
+As of intermidied release the problem is fixed with Tiled 1.3.4 
+Scripting: Added methods to get tileset's image size (backported from 1.4, #2733)
+So it's already in the stable release just go and update to 1.3.4 or newer.
+
+It seems that using the dev build of Tiled the API provides imageWidth and imageHeigh for the tileset,
+but in version 1.3.3 that's not the case. So if you have a problem loading the tileset in Godot 
+you'll need to manually add the width and height of the image in the ```0/region = Rect2( 0, 0, undefined, undefined )```
+instead the undefined values. Probably this will be fixed in next minor release of Tiled 1.4.
+In the meantime though, they’re already available in the development snapshots, so I’d suggest you should use the latest snapshot.
+https://thorbjorn.itch.io/tiled - the ones with the (snapshot);
 
 ## Tiled Extensions
 Tiled can be extended with the use of JavaScript. Scripts can be used to implement custom map formats, custom actions and new tools. Scripts can also automate actions based on signals.
@@ -54,7 +58,7 @@ When you want to add these plugins to your Tiled installation:
   - **Linux**	
   `~/.config/tiled/extensions/`
 
-* When using a version older than Tiled 1.3.3, restart Tiled.
+* If using a version older than Tiled 1.3.3, restart Tiled, but better update your Tiled installation
 
   (This was necessary because Tiled only watched existing scripts for
   changes. No restarts are necessary when making changes to existing script
