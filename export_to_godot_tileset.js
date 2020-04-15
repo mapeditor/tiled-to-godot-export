@@ -6,7 +6,7 @@ class GodotTilesetExporter {
         this.tileset = tileset;
         this.fileName = fileName;
         // noinspection JSUnresolvedFunction
-        this.projectRoot = getResPath(this.map.property("projectRoot"), fileName);
+        this.projectRoot = getResPath(this.tileset.property("projectRoot"), fileName);
         this.spriteImagePath = this.tileset.image.replace(this.projectRoot, "");
         this.shapesResources = "";
         this.shapes = "";
