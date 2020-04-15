@@ -17,10 +17,11 @@ function getResPath (projectRoot, outputPath) {
   if (!projectRoot) {
     projectRoot = p.join('/')
   }
+  projectRoot = projectRoot.replace(/\\/g, '/')
   // Use it as absolute, if it doesn't start with ".", relative if it does
   if (projectRoot[0] === '.') {
-    let out = p
-    projectRoot.replace('\\', '/').split('/').forEach((segment, i) => {
+    const out = p
+    projectRoot.split('/').forEach((segment, i) => {
       if (segment === '..') {
         out.pop()
       }
