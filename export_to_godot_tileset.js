@@ -7,10 +7,7 @@ class GodotTilesetExporter {
         this.fileName = fileName;
         // noinspection JSUnresolvedFunction
         this.projectRoot = this.tileset.property("projectRoot");
-        if (!this.projectRoot) {
-            throw new Error("Missing mandatory custom property: projectRoot!");
-        }
-        this.projectRoot = this.projectRoot.replace('\\', '/');
+        this.projectRoot = getResPath(this.projectRoot.replace('\\', '/'), fileName);
         this.spriteImagePath = this.tileset.image.replace(this.projectRoot, "");
         this.shapesResources = "";
         this.shapes = "";

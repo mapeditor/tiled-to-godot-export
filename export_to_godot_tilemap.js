@@ -7,10 +7,7 @@ class GodotTilemapExporter {
         this.fileName = fileName;
         // noinspection JSUnresolvedFunction
         this.projectRoot = this.map.property("projectRoot");
-        if (!this.projectRoot) {
-            throw new Error("Missing mandatory custom property: projectRoot!");
-        }
-        this.projectRoot = this.projectRoot.replace('\\', '/');
+        this.projectRoot = getResPath(this.projectRoot.replace('\\', '/'), fileName);
         this.tileOffset = 65536;
         this.tileMapsString = "";
         this.tilesetsString = "";
