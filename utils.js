@@ -9,3 +9,24 @@ function logf(data){
 function logk(data){
     console.log(Object.keys(data));
 }
+
+function getResPath (projectRoot, outputPath) {
+  const p = outputPath.split('/').slice(0, -1)
+  // check for projectRoot
+  // If projectRoot is not set, set it to current file's location
+  if (!projectRoot) {
+    projectRoot = p.join('/')
+  }
+  projectRoot = projectRoot.replace(/\\/g, '/')
+  // Use it as absolute, if it doesn't start with ".", relative if it does
+  if (projectRoot[0] === '.') {
+    const out = p
+    projectRoot.split('/').forEach((segment, i) => {
+      if (segment === '..') {
+        out.pop()
+      }
+    })
+    projectRoot = out.join('/')
+  }
+  return projectRoot
+}
