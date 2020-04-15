@@ -70,9 +70,11 @@ If you prefer watching check the video in YouTube:
 
 [How to export from Tiled To Godot 3.2](https://youtu.be/4jSFAXIa_Lo)
 
-### setting `res://`
+### Setting projectRoot `res://`
 
-The exporter needs to know where `res://` is. By default, it's in the same directory where the Tiled files are being saved. You can override it with a tile/map custom property `projectRoot : string` that is either relative to the file you are exporting (starting with a `.`), or absolute (not recommended.)
+The exporter needs to know where `res://` is. By default, it's in the same directory where the Tiled files are being saved.
+You can override it with a tile/map custom property `projectRoot : string` that is either relative to the file you are exporting (starting with a `.`), or absolute path,
+Either way the value of projectRoot is transformed to a resource path which Godot use.
 
 **_!!! Pay attention to the "/" instead of standard windows "\\".
 Single Backslash "\\" is used for escaping special symbols._**
