@@ -121,7 +121,7 @@ ${this.shapesResources}[resource]
 0/tile_mode = 2
 0/autotile/icon_coordinate = Vector2( 0, 0 )
 0/autotile/tile_size = Vector2( ${this.tileset.tileWidth}, ${this.tileset.tileHeight} )
-0/autotile/spacing = 0
+0/autotile/spacing = ${this.tileset.tileSpacing}
 0/autotile/occluder_map = [  ]
 0/autotile/navpoly_map = [  ]
 0/autotile/priority_map = [  ]

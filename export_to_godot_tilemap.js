@@ -193,7 +193,7 @@ class GodotTilemapExporter {
      **/
     getTilesetColumns(tileset) {
         // noinspection JSUnresolvedVariable
-        return Math.floor(tileset.imageWidth / tileset.tileWidth);
+        return Math.ceil(tileset.imageWidth / (tileset.tileWidth + tileset.tileSpacing));
     }
 
     /**
