@@ -195,7 +195,7 @@ class GodotTilemapExporter {
      **/
     getTilesetColumns(tileset) {
         // noinspection JSUnresolvedVariable
-        const imageWidth = tileset.imageWidth + tileset.tileSpacing - (tileset.margin * 2)
+        const imageWidth = tileset.imageWidth + tileset.tileSpacing - tileset.margin
         const tileWidth = tileset.tileWidth + tileset.tileSpacing
         const calculatedColumnCount = imageWidth / tileWidth
         // Tiled ignores "partial" tiles (extra unaccounted for pixels in the image),
