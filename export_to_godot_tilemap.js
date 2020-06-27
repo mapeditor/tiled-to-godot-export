@@ -323,6 +323,8 @@ ${this.tileMapsString}
      * @returns {string}
      */
     getTilesetResourceTemplate(id, path) {
+        // Strip leading slashes to prevent invalid triple slashes in Godot res:// path:
+        path = path.replace(/^\/+/, '');
         return `[ext_resource path="res://${path}" type="TileSet" id=${id}]
 `;
     }
