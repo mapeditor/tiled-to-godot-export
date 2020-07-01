@@ -117,11 +117,11 @@ ${this.shapesResources}[resource]
 0/texture = ExtResource( 1 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )
-0/region = Rect2( 0, 0, ${this.tileset.imageWidth}, ${this.tileset.imageHeight} )
+0/region = Rect2( ${this.tileset.margin}, ${this.tileset.margin}, ${this.tileset.imageWidth}, ${this.tileset.imageHeight} )
 0/tile_mode = 2
 0/autotile/icon_coordinate = Vector2( 0, 0 )
 0/autotile/tile_size = Vector2( ${this.tileset.tileWidth}, ${this.tileset.tileHeight} )
-0/autotile/spacing = 0
+0/autotile/spacing = ${this.tileset.tileSpacing}
 0/autotile/occluder_map = [  ]
 0/autotile/navpoly_map = [  ]
 0/autotile/priority_map = [  ]

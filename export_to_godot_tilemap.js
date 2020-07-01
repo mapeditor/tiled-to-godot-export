@@ -188,12 +188,19 @@ class GodotTilemapExporter {
 
     /**
      * Tileset should expose columns ... but didn't at the moment so we
-     * calculate them base on the image width and tileWidth
-     * return {number}
+     * calculate them base on the image width and tileWidth.
+     * Takes into account margin (extra space around the image edges) and 
+     * tile spacing (padding between individual tiles).
+     * @returns {number}
      **/
     getTilesetColumns(tileset) {
         // noinspection JSUnresolvedVariable
-        return Math.floor(tileset.imageWidth / tileset.tileWidth);
+        const imageWidth = tileset.imageWidth + tileset.tileSpacing - tileset.margin
+        const tileWidth = tileset.tileWidth + tileset.tileSpacing
+        const calculatedColumnCount = imageWidth / tileWidth
+        // Tiled ignores "partial" tiles (extra unaccounted for pixels in the image),
+        // so we need to return as Math.floor to avoid throwing off the tile indices.
+        return Math.floor(calculatedColumnCount);
     }
 
     /**
