@@ -70,10 +70,10 @@ class GodotTilemapExporter {
             // noinspection JSUnresolvedVariable
             if (layer.isTileLayer) {
                 const layerData = this.getLayerData(layer);
-                for(let idx = 0; idx < layerData.length; idx++) {
+                for (let idx = 0; idx < layerData.length; idx++) {
                     const ld = layerData[idx];
                     if (!ld.isEmpty) {
-                        const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i +"_" + idx;
+                        const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i + "_" + idx;
                         this.mapLayerToTileset(layer.name, ld.tilesetID);
                         this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight);
                     }
@@ -107,18 +107,19 @@ class GodotTilemapExporter {
             for (let x = boundingRect.left; x <= boundingRect.right; ++x) {
 
                 // noinspection JSUnresolvedVariable,JSUnresolvedFunction
-                let tileId = layer.cellAt(x, y).tileId;
+                let cell = layer.cellAt(x, y);
+                let tileId = cell.tileId;
                 let tileGodotID = tileId;
 
                 /** Check and don't export blank tiles **/
                 if (tileId !== -1) {
-                    
+
                     /**
                      * Find the tileset on the list, if not found, add
                      */
                     const tile = layer.tileAt(x, y);
-                    
-                    let tileset = tilesetList.find( item => item.tileset === tile.tileset);
+
+                    let tileset = tilesetList.find(item => item.tileset === tile.tileset);
 
                     if (!tileset) {
                         tileset = {
@@ -135,7 +136,7 @@ class GodotTilemapExporter {
                     }
 
                     const tilesetColumns = tileset.tilesetColumns;
-                    
+
                     /** Handle Godot strange offset by rows in the tileset image **/
                     if (tileId >= tilesetColumns) {
                         let tileY = Math.floor(tileId / tilesetColumns);
@@ -146,7 +147,7 @@ class GodotTilemapExporter {
                     /**
                      * Godot coordinates use an offset of 65536
                      * Check the README.md: Godot Tilemap Encoding & Limits
-                     * */
+                     */
                     let yValue = y;
                     let xValue = x;
                     if (xValue < 0) {
@@ -154,11 +155,13 @@ class GodotTilemapExporter {
                     }
                     let firstParam = xValue + (yValue * this.tileOffset);
 
+
                     /**
-                     This is texture image form the tileset in godot
-                     Tiled doesn't support more than one image in tileset
+                     * This is texture image form the tileset in godot
+                     * Tiled doesn't support more than one image in tileset
+                     * Also this is used to encode the rotation of a tile... as it seems. :P
                      */
-                    let secondParam = 0;
+                    let secondParam = this.getSecondParam(cell);
 
                     tileset.poolIntArrayString += firstParam + ", " + secondParam + ", " + tileGodotID + ", ";
                 }
@@ -167,16 +170,16 @@ class GodotTilemapExporter {
 
         // Remove trailing commas and blank
         tilesetList.forEach(i => {
-			i.poolIntArrayString = i.poolIntArrayString.replace(/,\s*$/, "");
+            i.poolIntArrayString = i.poolIntArrayString.replace(/,\s*$/, "");
         });
-        
-        for(let idx = 0; idx < tilesetList.length; idx++) {
+
+        for (let idx = 0; idx < tilesetList.length; idx++) {
             const current = tilesetList[idx];
             if (current.tileset !== null && current.poolIntArrayString !== "") {
-				current.tilesetID = this.getTilesetIDByTileset(current.tileset);
-			} else {
-				console.warn(`Error: The layer ${layer.name} is empty and has been skipped!`);
-			}
+                current.tilesetID = this.getTilesetIDByTileset(current.tileset);
+            } else {
+                console.warn(`Error: The layer ${layer.name} is empty and has been skipped!`);
+            }
         }
 
         return tilesetList;
@@ -186,13 +189,112 @@ class GodotTilemapExporter {
         return this.tilesetsIndex.get(tileset.name);
     }
 
+    getSecondParam(cell) {
+        /**
+         * no rotation or flips
+         * cell.cell.flippedHorizontally is false and
+         * cell.cell.flippedVertically is false
+         * cell.cell.flippedAntiDiagonally is false
+         */
+        let secondParam = 0;
+
+
+        /**
+         * rotated 1x left or
+         * rotated 3x right
+         */
+        if (
+            cell.flippedHorizontally === false &&
+            cell.flippedVertically === true &&
+            cell.flippedAntiDiagonally === true
+        ) {
+            secondParam = -1073741824;
+        }
+
+        /**
+         * rotated 2x left or 2x right or
+         * vertical and horizontal flip
+         */
+        if (
+            cell.flippedHorizontally === true &&
+            cell.flippedVertically === true &&
+            cell.flippedAntiDiagonally === false
+        ) {
+            secondParam = 1610612736;
+        }
+
+        /**
+         * rotated 3x left or
+         * rotated 1x right
+         */
+        if (
+            cell.flippedHorizontally === true &&
+            cell.flippedVertically === false &&
+            cell.flippedAntiDiagonally === true
+        ) {
+            secondParam = -1610612736;
+        }
+
+        /**
+         * flipped horizontal or
+         * flipped vertical and 2x times rotated left/right
+         */
+        if (
+            cell.flippedHorizontally === true &&
+            cell.flippedVertically === false &&
+            cell.flippedAntiDiagonally === false
+        ) {
+            secondParam = 536870912;
+        }
+
+        /**
+         * flipped horizontal and 1x rotated left or
+         * flipped vertical and 1x time rotated right
+         */
+        if (
+            cell.flippedHorizontally === false &&
+            cell.flippedVertically === false &&
+            cell.flippedAntiDiagonally === true
+        ) {
+            secondParam = -2147483648;
+        }
+
+        /**
+         * flipped horizontal and 2x times rotated left/right or
+         * flipped vertically
+         */
+        if (
+            cell.flippedHorizontally === false &&
+            cell.flippedVertically === true &&
+            cell.flippedAntiDiagonally === false
+        ) {
+            secondParam = 1073741824;
+        }
+
+        /**
+         * flipped horizontal and 3x rotated left or
+         * flipped vertically and 1x rotated left or
+         * flipped horizontal and 1x rotated right or
+         * flipped vertically and 3x rotated right
+         */
+        if (
+            cell.flippedHorizontally === true &&
+            cell.flippedVertically === true &&
+            cell.flippedAntiDiagonally === true
+        ) {
+            secondParam = -536870912;
+        }
+
+        return secondParam;
+    }
+
     /**
      * Tileset should expose columns ... but didn't at the moment so we
      * calculate them base on the image width and tileWidth.
-     * Takes into account margin (extra space around the image edges) and 
+     * Takes into account margin (extra space around the image edges) and
      * tile spacing (padding between individual tiles).
      * @returns {number}
-     **/
+     */
     getTilesetColumns(tileset) {
         // noinspection JSUnresolvedVariable
         const imageWidth = tileset.imageWidth + tileset.tileSpacing - tileset.margin
