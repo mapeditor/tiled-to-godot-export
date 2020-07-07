@@ -10,6 +10,7 @@ class GodotTilemapExporter {
         this.tileOffset = 65536;
         this.tileMapsString = "";
         this.tilesetsString = "";
+        this.extResourceId = 0;
 
         /**
          * Tiled doesn't have tileset ID so we create a map
@@ -48,11 +49,11 @@ class GodotTilemapExporter {
         for (let index = 0; index < this.map.tilesets.length; ++index) {
             // noinspection JSUnresolvedVariable
             const tileset = this.map.tilesets[index];
-            const tilesetID = index + 1;
-            this.tilesetsIndex.set(tileset.name, tilesetID);
+            this.extResourceId = index + 1;
+            this.tilesetsIndex.set(tileset.name, this.extResourceId);
             // noinspection JSUnresolvedVariable
             let tilesetPath = tileset.asset.fileName.replace(this.projectRoot, "").replace('.tsx', '.tres');
-            this.tilesetsString += this.getTilesetResourceTemplate(tilesetID, tilesetPath);
+            this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath);
         }
 
     }
@@ -76,6 +77,20 @@ class GodotTilemapExporter {
                         const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i + "_" + idx;
                         this.mapLayerToTileset(layer.name, ld.tilesetID);
                         this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight);
+                    }
+                }
+            } else if (layer.isObjectLayer) {
+                console.log('Object Layer Found: ', layer.name);
+                this.tileMapsString += `
+
+[node name="${layer.name}" type="Node2D" parent="."]`;
+                for (const object of layer.objects) {
+                    console.log("    Object Name: ", object.name);
+                    console.log("        Tile: ", object.tile);
+                    if (object.tile) {
+                        console.log("            Id: ", object.tile.id);
+                        console.log("            Width: ", object.tile.width);
+                        console.log("            Height: ", object.tile.height);
                     }
                 }
             }
