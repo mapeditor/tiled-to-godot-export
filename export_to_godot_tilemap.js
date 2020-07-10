@@ -53,7 +53,7 @@ class GodotTilemapExporter {
             this.tilesetsIndex.set(tileset.name, this.extResourceId);
             // noinspection JSUnresolvedVariable
             let tilesetPath = tileset.asset.fileName.replace(this.projectRoot, "").replace('.tsx', '.tres');
-            this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath);
+            this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "TileSet");
         }
 
     }
@@ -91,6 +91,17 @@ class GodotTilemapExporter {
                         console.log("            Id: ", object.tile.id);
                         console.log("            Width: ", object.tile.width);
                         console.log("            Height: ", object.tile.height);
+                        console.log("            TileSet: ", object.tile.tileset);
+                        console.log("            TileSet Image: ", object.tile.tileset.image);
+                        console.log("            TileSet Name: ", object.tile.tileset.name);
+
+                        let tilesetsIndexKey = object.tile.tileset.name + "_Image";
+                        if (!this.tilesetsIndex.get(tilesetsIndexKey)) {
+                            this.extResourceId = this.extResourceId + 1;
+                            this.tilesetsIndex.set(tilesetsIndexKey, this.extResourceId);
+                            let tilesetPath = object.tile.tileset.image.replace(this.projectRoot, "");
+                            this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "Texture");
+                        }
                     }
                 }
             }
@@ -337,10 +348,10 @@ ${this.tileMapsString}
      * Template for a tileset resource
      * @returns {string}
      */
-    getTilesetResourceTemplate(id, path) {
+    getTilesetResourceTemplate(id, path, type) {
         // Strip leading slashes to prevent invalid triple slashes in Godot res:// path:
         path = path.replace(/^\/+/, '');
-        return `[ext_resource path="res://${path}" type="TileSet" id=${id}]
+        return `[ext_resource path="res://${path}" type="${type}" id=${id}]
 `;
     }
 
