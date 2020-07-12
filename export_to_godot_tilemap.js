@@ -91,17 +91,30 @@ class GodotTilemapExporter {
                         console.log("            Id: ", object.tile.id);
                         console.log("            Width: ", object.tile.width);
                         console.log("            Height: ", object.tile.height);
+                        console.log("            X: ", object.x);
+                        console.log("            Y: ", object.y);
                         console.log("            TileSet: ", object.tile.tileset);
                         console.log("            TileSet Image: ", object.tile.tileset.image);
                         console.log("            TileSet Name: ", object.tile.tileset.name);
 
                         let tilesetsIndexKey = object.tile.tileset.name + "_Image";
+                        let textureResourceId = 0;
                         if (!this.tilesetsIndex.get(tilesetsIndexKey)) {
                             this.extResourceId = this.extResourceId + 1;
+                            textureResourceId = this.extResourceId;
                             this.tilesetsIndex.set(tilesetsIndexKey, this.extResourceId);
                             let tilesetPath = object.tile.tileset.image.replace(this.projectRoot, "");
                             this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "Texture");
+                        } else {
+                            textureResourceId = this.tilesetsIndex.get(tilesetsIndexKey);
                         }
+                        this.tileMapsString += `
+ 
+[node name="${object.name}" type="Sprite" parent="${layer.name}"]
+position = Vector2( ${object.x}, ${object.y} )
+texture = ExtResource( ${textureResourceId} )
+region_enabled = true
+region_rect = Rect2( 64, 0, ${object.tile.width}, ${object.tile.height} )`;
                     }
                 }
             }
