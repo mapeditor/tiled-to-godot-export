@@ -108,13 +108,20 @@ class GodotTilemapExporter {
                         } else {
                             textureResourceId = this.tilesetsIndex.get(tilesetsIndexKey);
                         }
+
+                        let tileOffset = this.getTileOffset(object.tile.tileset, object.tile.id);
+
+                        // Account for anchoring in Godot (corner vs. middle):
+                        let objectPositionX = object.x + (object.tile.width / 2);
+                        let objectPositionY = object.y - (object.tile.height / 2);
+
                         this.tileMapsString += `
  
 [node name="${object.name}" type="Sprite" parent="${layer.name}"]
-position = Vector2( ${object.x}, ${object.y} )
+position = Vector2( ${objectPositionX}, ${objectPositionY} )
 texture = ExtResource( ${textureResourceId} )
 region_enabled = true
-region_rect = Rect2( 64, 0, ${object.tile.width}, ${object.tile.height} )`;
+region_rect = Rect2( ${tileOffset.x}, ${tileOffset.y}, ${object.tile.width}, ${object.tile.height} )`;
                     }
                 }
             }
@@ -342,6 +349,30 @@ region_rect = Rect2( 64, 0, ${object.tile.width}, ${object.tile.height} )`;
         // Tiled ignores "partial" tiles (extra unaccounted for pixels in the image),
         // so we need to return as Math.floor to avoid throwing off the tile indices.
         return Math.floor(calculatedColumnCount);
+    }
+
+    /**
+     * Calculate the X and Y offset (in pixels) for the specified tile
+     * ID within the specified tileset image.
+     * 
+     * @param {Tileset} tileset - The full Tileset object
+     * @param {int} tileId - Id for the tile to extract offset for
+     * @returns {object} - An object with pixel offset in the format {x: int, y: int}
+     */
+    getTileOffset(tileset, tileId) {
+        console.log("              Extracting tile offset for ID: ", tileId);
+        console.log("              Tileset name: ", tileset.name);
+        let columnCount = this.getTilesetColumns(tileset);
+        console.log("              Column count: ", columnCount);
+        let row = Math.floor(tileId / columnCount);
+        console.log("              Row: ", row);
+        let col = tileId % columnCount;
+        console.log("              Col: ", col);
+        //let col = (columnCount * tileset.tileWidth)
+        return {
+            x: col * tileset.tileWidth,
+            y: row * tileset.tileHeight
+        };
     }
 
     /**
