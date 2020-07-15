@@ -368,10 +368,11 @@ region_rect = Rect2( ${tileOffset.x}, ${tileOffset.y}, ${object.tile.width}, ${o
         console.log("              Row: ", row);
         let col = tileId % columnCount;
         console.log("              Col: ", col);
-        //let col = (columnCount * tileset.tileWidth)
+        let xOffset = tileset.margin + (tileset.tileSpacing * col);
+        let yOffset = tileset.margin + (tileset.tileSpacing * row);
         return {
-            x: col * tileset.tileWidth,
-            y: row * tileset.tileHeight
+            x: (col * tileset.tileWidth) + xOffset,
+            y: (row * tileset.tileHeight) + yOffset
         };
     }
 
