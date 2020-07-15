@@ -80,23 +80,11 @@ class GodotTilemapExporter {
                     }
                 }
             } else if (layer.isObjectLayer) {
-                console.log('Object Layer Found: ', layer.name);
                 this.tileMapsString += `
 
 [node name="${layer.name}" type="Node2D" parent="."]`;
                 for (const object of layer.objects) {
-                    console.log("    Object Name: ", object.name);
-                    console.log("        Tile: ", object.tile);
                     if (object.tile) {
-                        console.log("            Id: ", object.tile.id);
-                        console.log("            Width: ", object.tile.width);
-                        console.log("            Height: ", object.tile.height);
-                        console.log("            X: ", object.x);
-                        console.log("            Y: ", object.y);
-                        console.log("            TileSet: ", object.tile.tileset);
-                        console.log("            TileSet Image: ", object.tile.tileset.image);
-                        console.log("            TileSet Name: ", object.tile.tileset.name);
-
                         let tilesetsIndexKey = object.tile.tileset.name + "_Image";
                         let textureResourceId = 0;
                         if (!this.tilesetsIndex.get(tilesetsIndexKey)) {
@@ -360,14 +348,9 @@ region_rect = Rect2( ${tileOffset.x}, ${tileOffset.y}, ${object.tile.width}, ${o
      * @returns {object} - An object with pixel offset in the format {x: int, y: int}
      */
     getTileOffset(tileset, tileId) {
-        console.log("              Extracting tile offset for ID: ", tileId);
-        console.log("              Tileset name: ", tileset.name);
         let columnCount = this.getTilesetColumns(tileset);
-        console.log("              Column count: ", columnCount);
         let row = Math.floor(tileId / columnCount);
-        console.log("              Row: ", row);
         let col = tileId % columnCount;
-        console.log("              Col: ", col);
         let xOffset = tileset.margin + (tileset.tileSpacing * col);
         let yOffset = tileset.margin + (tileset.tileSpacing * row);
         return {
