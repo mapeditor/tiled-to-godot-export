@@ -140,7 +140,8 @@ More about my struggles can be read in Tiled Forum or Godot reddit. Check the Co
 - [ ] Export navigation shapes<sup>*</sup>
 - [ ] Support for one-way collision shapes
 - [ ] Support for image layers
-- [ ] Support for object layers, which are exported as StaticBody2D, Area2D or LightOccluder2D for shapes (depending on the type property) and as Sprite for tiles
+- [x] Support for tile objects, which are exported to Godot as Sprite nodes. (Other types of objects are not yet included.)
+- [ ] Full support for object layers, which are exported as StaticBody2D, Area2D or LightOccluder2D for shapes (depending on the type property) and as Sprite for tiles
 - [ ] Support for group layers, which are exported as Node2Ds
 - [ ] Custom properties for maps, layers, tilesets, and objects are exported as metadata. Custom properties on tiles can be exported into the TileSet resource
 - [ ] Map background layer exported as a parallax background
