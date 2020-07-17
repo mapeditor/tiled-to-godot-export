@@ -8,6 +8,8 @@ class GodotTilesetExporter {
         // noinspection JSUnresolvedFunction
         this.projectRoot = getResPath(this.tileset.property("projectRoot"), fileName);
         this.spriteImagePath = this.tileset.image.replace(this.projectRoot, "");
+        // Strip leading slashes to prevent invalid triple slashes in Godot res:// path:
+        this.spriteImagePath = this.spriteImagePath.replace(/^\/+/, '');
         this.shapesResources = "";
         this.shapes = "";
         this.firstShapeID = "0";
@@ -30,7 +32,7 @@ class GodotTilesetExporter {
 
     iterateTiles() {
 
-        let autotileCoordinates = {x: 0, y: 0};
+        let autotileCoordinates = { x: 0, y: 0 };
 
         // noinspection JSUnresolvedVariable
         let tiles = this.tileset.tiles;
@@ -166,10 +168,10 @@ points = PoolVector2Array( ${coordinateString} )
     }
 
     getCollisionShapeRectangle(id, object) {
-        const topLeft = {x: object.x, y: object.y};
-        const topRight = {x: (object.x + object.width), y: object.y};
-        const bottomRight = {x: (object.x + object.width), y: (object.y + object.height)};
-        const bottomLeft = {x: object.x, y: (object.y + object.height)};
+        const topLeft = { x: object.x, y: object.y };
+        const topRight = { x: (object.x + object.width), y: object.y };
+        const bottomRight = { x: (object.x + object.width), y: (object.y + object.height) };
+        const bottomLeft = { x: object.x, y: (object.y + object.height) };
 
         return `[sub_resource type="ConvexPolygonShape2D" id=${id}]
 points = PoolVector2Array( ${topLeft.x}, ${topLeft.y}, ${topRight.x}, ${topRight.y}, ${bottomRight.x}, ${bottomRight.y}, ${bottomLeft.x}, ${bottomLeft.y} )

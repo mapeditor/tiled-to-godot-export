@@ -3,14 +3,14 @@ var Flatted=function(a,l){return{parse:function(n,t){var e=JSON.parse(n,i).map(f
 
 var log = console.log.bind(console);
 
-function logf(data){
-    console.log(Flatted.stringify(data));
+function logf(data) {
+  console.log(Flatted.stringify(data));
 }
-function logk(data){
-    console.log(Object.keys(data));
+function logk(data) {
+  console.log(Object.keys(data));
 }
 
-function getResPath (projectRoot, outputPath) {
+function getResPath(projectRoot, outputPath) {
   const p = outputPath.split('/').slice(0, -1)
   // check for projectRoot
   // If projectRoot is not set, set it to current file's location

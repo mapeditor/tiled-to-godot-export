@@ -10,6 +10,7 @@ class GodotTilemapExporter {
         this.tileOffset = 65536;
         this.tileMapsString = "";
         this.tilesetsString = "";
+        this.extResourceId = 0;
 
         /**
          * Tiled doesn't have tileset ID so we create a map
@@ -48,11 +49,11 @@ class GodotTilemapExporter {
         for (let index = 0; index < this.map.tilesets.length; ++index) {
             // noinspection JSUnresolvedVariable
             const tileset = this.map.tilesets[index];
-            const tilesetID = index + 1;
-            this.tilesetsIndex.set(tileset.name, tilesetID);
+            this.extResourceId = index + 1;
+            this.tilesetsIndex.set(tileset.name, this.extResourceId);
             // noinspection JSUnresolvedVariable
             let tilesetPath = tileset.asset.fileName.replace(this.projectRoot, "").replace('.tsx', '.tres');
-            this.tilesetsString += this.getTilesetResourceTemplate(tilesetID, tilesetPath);
+            this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "TileSet");
         }
 
     }
@@ -76,6 +77,39 @@ class GodotTilemapExporter {
                         const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i + "_" + idx;
                         this.mapLayerToTileset(layer.name, ld.tilesetID);
                         this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight);
+                    }
+                }
+            } else if (layer.isObjectLayer) {
+                this.tileMapsString += `
+
+[node name="${layer.name}" type="Node2D" parent="."]`;
+                for (const object of layer.objects) {
+                    if (object.tile) {
+                        let tilesetsIndexKey = object.tile.tileset.name + "_Image";
+                        let textureResourceId = 0;
+                        if (!this.tilesetsIndex.get(tilesetsIndexKey)) {
+                            this.extResourceId = this.extResourceId + 1;
+                            textureResourceId = this.extResourceId;
+                            this.tilesetsIndex.set(tilesetsIndexKey, this.extResourceId);
+                            let tilesetPath = object.tile.tileset.image.replace(this.projectRoot, "");
+                            this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "Texture");
+                        } else {
+                            textureResourceId = this.tilesetsIndex.get(tilesetsIndexKey);
+                        }
+
+                        let tileOffset = this.getTileOffset(object.tile.tileset, object.tile.id);
+
+                        // Account for anchoring in Godot (corner vs. middle):
+                        let objectPositionX = object.x + (object.tile.width / 2);
+                        let objectPositionY = object.y - (object.tile.height / 2);
+
+                        this.tileMapsString += `
+ 
+[node name="${object.name}" type="Sprite" parent="${layer.name}"]
+position = Vector2( ${objectPositionX}, ${objectPositionY} )
+texture = ExtResource( ${textureResourceId} )
+region_enabled = true
+region_rect = Rect2( ${tileOffset.x}, ${tileOffset.y}, ${object.tile.width}, ${object.tile.height} )`;
                     }
                 }
             }
@@ -306,6 +340,26 @@ class GodotTilemapExporter {
     }
 
     /**
+     * Calculate the X and Y offset (in pixels) for the specified tile
+     * ID within the specified tileset image.
+     * 
+     * @param {Tileset} tileset - The full Tileset object
+     * @param {int} tileId - Id for the tile to extract offset for
+     * @returns {object} - An object with pixel offset in the format {x: int, y: int}
+     */
+    getTileOffset(tileset, tileId) {
+        let columnCount = this.getTilesetColumns(tileset);
+        let row = Math.floor(tileId / columnCount);
+        let col = tileId % columnCount;
+        let xOffset = tileset.margin + (tileset.tileSpacing * col);
+        let yOffset = tileset.margin + (tileset.tileSpacing * row);
+        return {
+            x: (col * tileset.tileWidth) + xOffset,
+            y: (row * tileset.tileHeight) + yOffset
+        };
+    }
+
+    /**
      * Template for a scene
      * @returns {string}
      */
@@ -322,8 +376,10 @@ ${this.tileMapsString}
      * Template for a tileset resource
      * @returns {string}
      */
-    getTilesetResourceTemplate(id, path) {
-        return `[ext_resource path="res://${path}" type="TileSet" id=${id}]
+    getTilesetResourceTemplate(id, path, type) {
+        // Strip leading slashes to prevent invalid triple slashes in Godot res:// path:
+        path = path.replace(/^\/+/, '');
+        return `[ext_resource path="res://${path}" type="${type}" id=${id}]
 `;
     }
 
