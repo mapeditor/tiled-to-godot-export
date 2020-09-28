@@ -105,7 +105,7 @@ class GodotTilesetExporter {
      **/
     getTilesetColumns() {
         // noinspection JSUnresolvedVariable
-        return Math.floor((this.tileset.imageWidth - this.tileset.margin) / this.tileset.tileWidth);
+        return Math.floor(this.tileset.imageWidth / this.tileset.tileWidth);
     }
 
     getTilesetTemplate() {
@@ -119,7 +119,7 @@ ${this.shapesResources}[resource]
 0/texture = ExtResource( 1 )
 0/tex_offset = Vector2( 0, 0 )
 0/modulate = Color( 1, 1, 1, 1 )
-0/region = Rect2( ${this.tileset.margin}, ${this.tileset.margin}, ${this.tileset.imageWidth - this.tileset.margin}, ${this.tileset.imageHeight - this.tileset.margin} )
+0/region = Rect2( ${this.tileset.margin}, ${this.tileset.margin}, ${this.tileset.imageWidth}, ${this.tileset.imageHeight} )
 0/tile_mode = 2
 0/autotile/icon_coordinate = Vector2( 0, 0 )
 0/autotile/tile_size = Vector2( ${this.tileset.tileWidth}, ${this.tileset.tileHeight} )
