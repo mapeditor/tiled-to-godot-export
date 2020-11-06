@@ -105,7 +105,10 @@ class GodotTilesetExporter {
      **/
     getTilesetColumns() {
         // noinspection JSUnresolvedVariable
-        return Math.floor(this.tileset.imageWidth / (this.tileset.tileWidth + this.tileset.tileSpacing));
+        return Math.floor(
+            (this.tileset.imageWidth - Math.max(this.tileset.margin - this.tileset.tileSpacing / 2, 0))
+            / (this.tileset.tileWidth + this.tileset.tileSpacing)
+        );
     }
 
     getTilesetTemplate() {
