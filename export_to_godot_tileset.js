@@ -41,7 +41,7 @@ class GodotTilesetExporter {
 
             let tile = tiles[index];
 
-            const tilesetColumns = this.getTilesetColumns();
+            const tilesetColumns = getTilesetColumns(this.tileset);
             if ((autotileCoordinates.x + 1) > tilesetColumns) {
                 autotileCoordinates.x = 0;
                 autotileCoordinates.y += 1;
@@ -95,19 +95,6 @@ class GodotTilesetExporter {
             autotileCoordinates,
             false,
             tile.id
-        );
-    }
-
-    /**
-     * Tileset should expose columns ... but didn't at the moment so we
-     * calculate them base on the image width and tileWidth
-     * return {number}
-     **/
-    getTilesetColumns() {
-        // noinspection JSUnresolvedVariable
-        return Math.floor(
-            (this.tileset.imageWidth - Math.max(this.tileset.margin - this.tileset.tileSpacing / 2, 0))
-            / (this.tileset.tileWidth + this.tileset.tileSpacing)
         );
     }
 
