@@ -5,7 +5,7 @@ Tiled plugins for exporting Tilemaps and Tilesets in Godot 3.2 format
  - export_to_godot_tilemap.js
  - export_to_godot_tileset.js
  - utils.js
- 
+
 The plugin requires Tiled version 1.3.4 or newer.
 
 More information about the Tilemap structure of Godot can be found here:
@@ -35,14 +35,14 @@ When you want to add these plugins to your Tiled installation:
   subdirectory.
 
   (Alternatively, clone this git repository into the extensions directory)
-  
+
   Tiled extension directory is:
-  
+
   - **Windows**
    `C:/Users/<USER>/AppData/Local/Tiled/extensions/`
   - **macOS**
   `~/Library/Preferences/Tiled/extensions/`
-  - **Linux**	
+  - **Linux**
   `~/.config/tiled/extensions/`
 
 * If using a version older than Tiled 1.3.3, restart Tiled, but better update your Tiled installation
@@ -66,8 +66,8 @@ Either way the value of projectRoot is transformed to a resource path which Godo
 **_!!! Pay attention to the "/" instead of standard windows "\\".
 Single Backslash "\\" is used for escaping special symbols._**
 
-This is needed so when you export to a subfolder in your Godot project all the relative 
-paths for the resources `(res://)` are set correctly and relative to the custom property 
+This is needed so when you export to a subfolder in your Godot project all the relative
+paths for the resources `(res://)` are set correctly and relative to the custom property
 you've added `"projectRoot"`;
 
 If everything is fine when you go to _File -> Export As_, a new option should exist:
@@ -105,6 +105,12 @@ if Input.is_action_just_pressed("reload_scene"):
 ```
 Don't forget to add key/mouse/controller mapping for the "reload_scene" action ;)
 
+### Tileset objects for collisions & navigation
+
+To setup a collision shape for a tile, select the tile in the tilset, and add a new shape (rectangle or polygon only). This shape will get imported as a collision shape.
+
+For navigation, do the same thing, but set the `Type` field on the object to `navigation`. This extension will export it to the navigation mesh data for the TileSet in godot.
+
 ## Why use it?
 
 The main focus was easily editing and creating new maps and tilesets.
@@ -124,7 +130,7 @@ More about my struggles can be read in Tiled Forum or Godot reddit. Check the Co
 - [ ] Export visibility and opacity from layers
 - [x] Export collision shapes<sup>*</sup>
 - [ ] Export occluder shapes<sup>*</sup>
-- [ ] Export navigation shapes<sup>*</sup>
+- [x] Export navigation shapes<sup>*</sup>
 - [ ] Support for one-way collision shapes
 - [ ] Support for image layers
 - [x] Support for tile objects, which are exported to Godot as Sprite nodes. (Other types of objects are not yet included.)
@@ -133,7 +139,7 @@ More about my struggles can be read in Tiled Forum or Godot reddit. Check the Co
 - [ ] Custom properties for maps, layers, tilesets, and objects are exported as metadata. Custom properties on tiles can be exported into the TileSet resource
 - [ ] Map background layer exported as a parallax background
 
-Legend: ticked = done, unticked = to do 
+Legend: ticked = done, unticked = to do
 
 \* The Godot tileset editor supports only Rectangle and Polygon. That's Tiled are supported and are converted to polygons in Godot.
 
