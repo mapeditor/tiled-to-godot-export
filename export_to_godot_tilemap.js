@@ -104,7 +104,7 @@ class GodotTilemapExporter {
                         let objectPositionY = object.y - (object.tile.height / 2);
 
                         this.tileMapsString += `
- 
+
 [node name="${object.name}" type="Sprite" parent="${layer.name}"]
 position = Vector2( ${objectPositionX}, ${objectPositionY} )
 texture = ExtResource( ${textureResourceId} )
@@ -159,7 +159,7 @@ region_rect = Rect2( ${tileOffset.x}, ${tileOffset.y}, ${object.tile.width}, ${o
                         tileset = {
                             tileset: tile.tileset,
                             tilesetID: null,
-                            tilesetColumns: this.getTilesetColumns(tile.tileset),
+                            tilesetColumns: getTilesetColumns(tile.tileset),
                             layer: layer,
                             isEmpty: tile.tileset === null,
                             poolIntArrayString: "",
@@ -323,32 +323,15 @@ region_rect = Rect2( ${tileOffset.x}, ${tileOffset.y}, ${object.tile.width}, ${o
     }
 
     /**
-     * Tileset should expose columns ... but didn't at the moment so we
-     * calculate them base on the image width and tileWidth.
-     * Takes into account margin (extra space around the image edges) and
-     * tile spacing (padding between individual tiles).
-     * @returns {number}
-     */
-    getTilesetColumns(tileset) {
-        // noinspection JSUnresolvedVariable
-        const imageWidth = tileset.imageWidth + tileset.tileSpacing - tileset.margin
-        const tileWidth = tileset.tileWidth + tileset.tileSpacing
-        const calculatedColumnCount = imageWidth / tileWidth
-        // Tiled ignores "partial" tiles (extra unaccounted for pixels in the image),
-        // so we need to return as Math.floor to avoid throwing off the tile indices.
-        return Math.floor(calculatedColumnCount);
-    }
-
-    /**
      * Calculate the X and Y offset (in pixels) for the specified tile
      * ID within the specified tileset image.
-     * 
+     *
      * @param {Tileset} tileset - The full Tileset object
      * @param {int} tileId - Id for the tile to extract offset for
      * @returns {object} - An object with pixel offset in the format {x: int, y: int}
      */
     getTileOffset(tileset, tileId) {
-        let columnCount = this.getTilesetColumns(tileset);
+        let columnCount = getTilesetColumns(tileset);
         let row = Math.floor(tileId / columnCount);
         let col = tileId % columnCount;
         let xOffset = tileset.margin + (tileset.tileSpacing * col);
