@@ -107,9 +107,12 @@ Don't forget to add key/mouse/controller mapping for the "reload_scene" action ;
 
 ### Tileset objects for collisions & navigation
 
-To setup a collision shape for a tile, select the tile in the tilset, and add a new shape (rectangle or polygon only). This shape will get imported as a collision shape.
+To setup a collision shape for a tile, first edit the tileset in Tiled:
 
-For navigation, do the same thing, but set the `Type` field on the object to `navigation`. This extension will export it to the navigation mesh data for the TileSet in godot.
+- Select the tile in the tileset file
+- You should see a side panel "Tile Collision Editor", use the menu above it to create a new shape. Use rectangle or polygon only.
+
+For navigation, do the same thing, but with the Object shape selected, set the `Type` field to `navigation`.
 
 ## Why use it?
 
