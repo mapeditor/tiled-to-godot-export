@@ -12,6 +12,7 @@ class GodotTilesetExporter {
         this.spriteImagePath = this.spriteImagePath.replace(/^\/+/, '');
         this.shapesResources = "";
         this.shapes = "";
+        this.navpolyMap = [];
         this.firstShapeID = "0";
     };
 
@@ -36,6 +37,10 @@ class GodotTilesetExporter {
 
         // noinspection JSUnresolvedVariable
         let tiles = this.tileset.tiles;
+
+        let minNavId = tiles.reduce((id, tile) => {
+            return Math.max(id, tile.id)
+        }, 0);
 
         for (let index = 0; index < tiles.length; index++) {
 
@@ -62,8 +67,13 @@ class GodotTilesetExporter {
                         // noinspection JSUnresolvedVariable
                         let object = tileObjects[oIndex];
 
-                        //TODO: add occlusions, navigations
-                        this.exportCollisions(object, tile, autotileCoordinates);
+                        //TODO: add occlusions
+                        if (object.type === "navigation") {
+                            minNavId++;
+                            this.exportNavigations(object, minNavId, autotileCoordinates);
+                        } else {
+                            this.exportCollisions(object, tile, autotileCoordinates);
+                        }
                     }
                 }
             }
@@ -84,7 +94,16 @@ class GodotTilesetExporter {
             this.shapesResources += this.getCollisionShapeRectangle(tile.id, object);
             this.exportShapes(tile, autotileCoordinates);
         }
+    }
 
+    exportNavigations(object, id, autotileCoordinates) {
+        if (object.polygon.length > 0) {
+            this.shapesResources += this.getNavigationShapePolygon(id, object);
+            this.exportNavigationShape(id, autotileCoordinates);
+        } else if (object.width > 0 && object.height > 0) {
+            this.shapesResources += this.getNavigationShapeRectangle(id, object);
+            this.exportNavigationShape(id, autotileCoordinates);
+        }
     }
 
     exportShapes(tile, autotileCoordinates) {
@@ -96,6 +115,11 @@ class GodotTilesetExporter {
             false,
             tile.id
         );
+    }
+
+    exportNavigationShape(id, autotileCoordinates) {
+        this.navpolyMap.push(`Vector2( ${autotileCoordinates.x}, ${autotileCoordinates.y} )`)
+        this.navpolyMap.push(`SubResource( ${id} )`)
     }
 
     getTilesetTemplate() {
@@ -115,7 +139,7 @@ ${this.shapesResources}[resource]
 0/autotile/tile_size = Vector2( ${this.tileset.tileWidth}, ${this.tileset.tileHeight} )
 0/autotile/spacing = ${this.tileset.tileSpacing}
 0/autotile/occluder_map = [  ]
-0/autotile/navpoly_map = [  ]
+0/autotile/navpoly_map = [ ${this.navpolyMap.join(', ')} ]
 0/autotile/priority_map = [  ]
 0/autotile/z_index_map = [  ]
 0/occluder_offset = Vector2( 0, 0 )
@@ -165,6 +189,39 @@ points = PoolVector2Array( ${coordinateString} )
 
         return `[sub_resource type="ConvexPolygonShape2D" id=${id}]
 points = PoolVector2Array( ${topLeft.x}, ${topLeft.y}, ${topRight.x}, ${topRight.y}, ${bottomRight.x}, ${bottomRight.y}, ${bottomLeft.x}, ${bottomLeft.y} )
+
+`;
+    }
+
+    getNavigationShapePolygon(id, object) {
+        let coordinateString = "";
+        // noinspection JSUnresolvedVariable
+        object.polygon.forEach((coordinate) => {
+          let coordinateX = object.x + coordinate.x;
+          let coordinateY = object.y + coordinate.y;
+          coordinateString += coordinateX + ", " + coordinateY + ", ";
+        });
+        // Remove trailing commas and blank
+        coordinateString = coordinateString.replace(/,\s*$/, "");
+        return `[sub_resource type="NavigationPolygon" id=${id}]
+vertices = PoolVector2Array( ${coordinateString} )
+polygons = [ PoolIntArray ( ${object.polygon.map((_value, index) => index).join(', ')} ) ]
+
+`;
+      }
+
+    getNavigationShapeRectangle(id, object) {
+        const topLeft = { x: object.x, y: object.y };
+        const topRight = { x: object.x + object.width, y: object.y };
+        const bottomRight = {
+          x: object.x + object.width,
+          y: object.y + object.height,
+        };
+        const bottomLeft = { x: object.x, y: object.y + object.height };
+
+        return `[sub_resource type="NavigationPolygon" id=${id}]
+vertices = PoolVector2Array( ${topLeft.x}, ${topLeft.y}, ${topRight.x}, ${topRight.y}, ${bottomRight.x}, ${bottomRight.y}, ${bottomLeft.x}, ${bottomLeft.y} )
+polygons = [ PoolIntArray( 0, 1, 2, 3 ) ]
 
 `;
     }
