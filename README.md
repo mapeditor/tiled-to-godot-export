@@ -105,6 +105,10 @@ if Input.is_action_just_pressed("reload_scene"):
 ```
 Don't forget to add key/mouse/controller mapping for the "reload_scene" action ;)
 
+### Tile layer z index
+
+Can set the z-index for the tilelayer by adding a custom property `z_index`, this will set the z-index of the tile layer in the scene file.
+
 ### Tileset objects for collisions & navigation
 
 To setup a collision shape for a tile, first edit the tileset in Tiled:

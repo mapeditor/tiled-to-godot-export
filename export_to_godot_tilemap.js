@@ -76,7 +76,15 @@ class GodotTilemapExporter {
                     if (!ld.isEmpty) {
                         const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i + "_" + idx;
                         this.mapLayerToTileset(layer.name, ld.tilesetID);
-                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight);
+                        this.tileMapsString += this.getTileMapTemplate(
+                            tileMapName,
+                            ld.tilesetID,
+                            ld.poolIntArrayString,
+                            ld.parent,
+                            parseInt(layer.properties()['z_index'], 10),
+                            layer.map.tileWidth,
+                            layer.map.tileHeight
+                        );
                     }
                 }
             } else if (layer.isObjectLayer) {
@@ -370,14 +378,20 @@ ${this.tileMapsString}
      * Template for a tilemap node
      * @returns {string}
      */
-    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, parent = ".", tileWidth = 16, tileHeight = 16) {
-        return `[node name="${tileMapName}" type="TileMap" parent="${parent}"]
+    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, parent = ".", zIndex, tileWidth = 16, tileHeight = 16) {
+        let template = `[node name="${tileMapName}" type="TileMap" parent="${parent}"]`
+        if (typeof zIndex === 'number' && !isNaN(zIndex)) {
+            template += `\nz_index = ${zIndex}`
+        }
+        template += `
 tile_set = ExtResource( ${tilesetID} )
 cell_size = Vector2( ${tileWidth}, ${tileHeight} )
 cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
 format = 1
 tile_data = PoolIntArray( ${poolIntArrayString} )
 `;
+
+        return template;
     }
 
     mapLayerToTileset(layerName, tilesetID) {
