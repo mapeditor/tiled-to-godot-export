@@ -146,7 +146,24 @@ Legend: ticked = done, unticked = to do
 
 \* The Godot tileset editor supports only Rectangle and Polygon. That's Tiled are supported and are converted to polygons in Godot.
 
+## Supported entity types
+
+Creating entities with these types will result in specific nodes to be created :
+
+- type `Area`
+
+  Creates an `Area2D` node in the scene, containing a `CollisionShape2D` with the rectangle set in the tiled map.
+
+  You can add `collision_layer` and `collision_mask` integer custom properties to set these properties for Godot.
+
+- type `Node2D`
+
+  Creates an empty `Node2D` at the specified position. Can be useful for defining spawn points for example.
+
+If present, the `group` custom string property will add the generated entity to the specified Godot scene group.
+
 ## Long term plans
+
 I'm making a 2D platformer and I'm gonna focus on these needs for now.
 Generally, I would like to support everything Tiled offers because it's a very good level editor.
 

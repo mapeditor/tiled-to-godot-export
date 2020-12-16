@@ -47,3 +47,75 @@ function getTilesetColumns(tileset) {
   // so we need to return as Math.floor to avoid throwing off the tile indices.
   return Math.floor(calculatedColumnCount);
 }
+
+/**
+ * returns undefined if undefined is passed in,
+ * returns an array with the `single` item inside otherwise 
+ */
+function singleDefinedItemToArray(single) {
+  if (!single) {
+    return undefined;
+  }
+  return [single];
+}
+
+/**
+ * Removes any undefined value with its key from an object
+ * @param {object} obj 
+ */
+function removeUndefined(obj) {
+  Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key])
+}
+
+
+/**
+ * Translates key values defining a godot scene node to the expected TSCN format output
+ * Passed keys must be strings. Values can be arrays (e.g. for groups)
+ * 
+ * @param {object} nodeProperties pair key/values for the "node" properties
+ * @param {object} contentProperties pair key/values for the content properties
+ * @return {string} TSCN scene node like so :
+ *         ```
+ *          [node key="value"]
+ *          content_key = AnyValue
+ *         ``` 
+ */
+function stringifyNode(nodeProperties, contentProperties = {}) {
+  // remove undefined values from objects
+  removeUndefined(nodeProperties);
+  removeUndefined(contentProperties);
+
+  let str = '\n';
+  str += '[node';
+  for (const [key, value] of Object.entries(nodeProperties)) {
+    str += ' ' + this.stringifyKeyValue(key, value, true, false);
+  }
+  str += ']\n';
+  for (const [key, value] of Object.entries(contentProperties)) {
+    str += this.stringifyKeyValue(key, value, false, true) + '\n';
+  }
+
+  return str;
+}
+
+/**
+ * Processes a key/value pair for a TSCN node
+ * 
+ * @param {string} key 
+ * @param {string|array} value 
+ * @param {bool} quote
+ * @param {bool} spaces 
+ */
+function stringifyKeyValue(key, value, quote, spaces) {
+  // flatten arrays
+  console.log(value);
+  if (Array.isArray(value)) {
+    value = '[\n"' + value.join('","') + '",\n]';
+  } else if (quote) {
+    value = `"${value}"`;
+  }
+  if (!spaces) {
+    return `${key}=${value}`;
+  }
+  return `${key} = ${value}`;
+}

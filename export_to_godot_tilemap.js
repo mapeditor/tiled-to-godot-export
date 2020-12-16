@@ -10,7 +10,9 @@ class GodotTilemapExporter {
         this.tileOffset = 65536;
         this.tileMapsString = "";
         this.tilesetsString = "";
+        this.subResourcesString = "";
         this.extResourceId = 0;
+        this.subResourceId = 0;
 
         /**
          * Tiled doesn't have tileset ID so we create a map
@@ -33,6 +35,28 @@ class GodotTilemapExporter {
         this.setTileMapsString();
         this.writeToFile();
         console.info(`Tilemap exported successfully to ${this.fileName}`);
+    }
+
+    /**
+     * Adds a new subresource to the genrated file
+     * 
+     * @param {string} type the type of subresource
+     * @param {object} contentProperties key:value map of properties
+     * @returns {int} the created sub resource id
+     */
+    addSubResource(type, contentProperties) {
+        const id = this.subResourceId++;
+
+        this.subResourcesString += `
+
+[sub_resource type="${type}" id=${id}]
+`;
+        removeUndefined(contentProperties);
+        for (const [key, value] of Object.entries(contentProperties)) {
+            this.subResourcesString += stringifyKeyValue(key, value, false, true) + '\n';
+        }
+
+        return id;
     }
 
     /**
@@ -76,14 +100,22 @@ class GodotTilemapExporter {
                     if (!ld.isEmpty) {
                         const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i + "_" + idx;
                         this.mapLayerToTileset(layer.name, ld.tilesetID);
-                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight);
+                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight, layer.property("group"));
                     }
                 }
             } else if (layer.isObjectLayer) {
-                this.tileMapsString += `
+                // create layer
+                this.tileMapsString += stringifyNode({
+                    name: layer.name,
+                    type: "Node2D",
+                    parent: ".",
+                    groups: singleDefinedItemToArray(layer.property("group"))
+                });
 
-[node name="${layer.name}" type="Node2D" parent="."]`;
+                // add entities
                 for (const object of layer.objects) {
+                    const groups = singleDefinedItemToArray(object.property("group"));
+
                     if (object.tile) {
                         let tilesetsIndexKey = object.tile.tileset.name + "_Image";
                         let textureResourceId = 0;
@@ -103,13 +135,54 @@ class GodotTilemapExporter {
                         let objectPositionX = object.x + (object.tile.width / 2);
                         let objectPositionY = object.y - (object.tile.height / 2);
 
-                        this.tileMapsString += `
+                        this.tileMapsString += stringifyNode({
+                            name: object.name,
+                            type: "Sprite",
+                            parent: layer.name
+                        }, {
+                            position: `Vector2( ${objectPositionX}, ${objectPositionY} )`,
+                            texture: `ExtResource( ${textureResourceId} )`,
+                            region_enabled: true,
+                            region_rect: `Rect2( ${tileOffset.x}, ${tileOffset.y}, ${object.tile.width}, ${object.tile.height} )`
+                        });
+                    } else if (object.type == "Area" && object.width && object.height) {
+                        // Creates an Area2D node with a rectangle shape inside
+                        // Does not support rotation
+                        const width = object.width / 2;
+                        const height = object.height / 2;
+                        const objectPositionX = object.x + width;
+                        const objectPositionY = object.y + height;
 
-[node name="${object.name}" type="Sprite" parent="${layer.name}"]
-position = Vector2( ${objectPositionX}, ${objectPositionY} )
-texture = ExtResource( ${textureResourceId} )
-region_enabled = true
-region_rect = Rect2( ${tileOffset.x}, ${tileOffset.y}, ${object.tile.width}, ${object.tile.height} )`;
+                        this.tileMapsString += stringifyNode({
+                            name: object.name,
+                            type: "Area2D",
+                            parent: layer.name,
+                            groups: groups
+                        }, {
+                            collision_layer: object.property("collision_layer"),
+                            collision_mask: object.property("collision_mask")
+                        });
+
+                        const shapeId = this.addSubResource("RectangleShape2D", {
+                            extents: `Vector2( ${width}, ${height} )`
+                        });
+                        this.tileMapsString += stringifyNode({
+                            name: "CollisionShape2D",
+                            type: "CollisionShape2D",
+                            parent: `${layer.name}/${object.name}`
+                        }, {
+                            shape: `SubResource( ${shapeId} )`,
+                            position: `Vector2( ${objectPositionX}, ${objectPositionY} )`,
+                        });
+                    } else if (object.type == "Node2D") {
+                        this.tileMapsString += stringifyNode({
+                            name: object.name,
+                            type: "Node2D",
+                            parent: layer.name,
+                            groups: groups
+                        }, {
+                            position: `Vector2( ${object.x}, ${object.y} )`
+                        });
                     }
                 }
             }
@@ -347,9 +420,12 @@ region_rect = Rect2( ${tileOffset.x}, ${tileOffset.y}, ${object.tile.width}, ${o
      * @returns {string}
      */
     getSceneTemplate() {
-        return `[gd_scene load_steps=2 format=2]
+        const loadSteps = 2 + this.subResourceId;
+
+        return `[gd_scene load_steps=${loadSteps} format=2]
 
 ${this.tilesetsString}
+${this.subResourcesString}
 [node name="Node2D" type="Node2D"]
 ${this.tileMapsString}
 `;
@@ -370,14 +446,24 @@ ${this.tileMapsString}
      * Template for a tilemap node
      * @returns {string}
      */
-    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, parent = ".", tileWidth = 16, tileHeight = 16) {
-        return `[node name="${tileMapName}" type="TileMap" parent="${parent}"]
-tile_set = ExtResource( ${tilesetID} )
-cell_size = Vector2( ${tileWidth}, ${tileHeight} )
-cell_custom_transform = Transform2D( 16, 0, 0, 16, 0, 0 )
-format = 1
-tile_data = PoolIntArray( ${poolIntArrayString} )
-`;
+    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, parent = ".", tileWidth = 16, tileHeight = 16, group = undefined) {
+        let groups = undefined;
+        if (group) {
+            groups = [group];
+        }
+
+        return stringifyNode({
+            name: tileMapName,
+            type: "TileMap",
+            parent: parent,
+            groups: groups
+        }, {
+            tile_set: `ExtResource( ${tilesetID} )`,
+            cell_size: `Vector2( ${tileWidth}, ${tileHeight} )`,
+            cell_custom_transform: `Transform2D( 16, 0, 0, 16, 0, 0 )`,
+            format: "1",
+            tile_data: `PoolIntArray( ${poolIntArrayString} )`
+        });
     }
 
     mapLayerToTileset(layerName, tilesetID) {
