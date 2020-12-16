@@ -100,7 +100,7 @@ class GodotTilemapExporter {
                     if (!ld.isEmpty) {
                         const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i + "_" + idx;
                         this.mapLayerToTileset(layer.name, ld.tilesetID);
-                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight, layer.property("group"));
+                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight, layer.property("groups"));
                     }
                 }
             } else if (layer.isObjectLayer) {
@@ -109,12 +109,12 @@ class GodotTilemapExporter {
                     name: layer.name,
                     type: "Node2D",
                     parent: ".",
-                    groups: singleDefinedItemToArray(layer.property("group"))
+                    groups: splitCommaSeparated(layer.property("groups"))
                 });
 
                 // add entities
                 for (const object of layer.objects) {
-                    const groups = singleDefinedItemToArray(object.property("group"));
+                    const groups = splitCommaSeparated(object.property("groups"));
 
                     if (object.tile) {
                         let tilesetsIndexKey = object.tile.tileset.name + "_Image";
@@ -446,12 +446,8 @@ ${this.tileMapsString}
      * Template for a tilemap node
      * @returns {string}
      */
-    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, parent = ".", tileWidth = 16, tileHeight = 16, group = undefined) {
-        let groups = undefined;
-        if (group) {
-            groups = [group];
-        }
-
+    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, parent = ".", tileWidth = 16, tileHeight = 16, groups = undefined) {
+        groups = splitCommaSeparated(groups);
         return stringifyNode({
             name: tileMapName,
             type: "TileMap",

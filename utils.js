@@ -49,14 +49,13 @@ function getTilesetColumns(tileset) {
 }
 
 /**
- * returns undefined if undefined is passed in,
- * returns an array with the `single` item inside otherwise 
+ * @param {string} str comma separated items
  */
-function singleDefinedItemToArray(single) {
-  if (!single) {
+function splitCommaSeparated(str) {
+  if (!str) {
     return undefined;
   }
-  return [single];
+  return str.split(',').map(s => s.trim());
 }
 
 /**
@@ -108,7 +107,6 @@ function stringifyNode(nodeProperties, contentProperties = {}) {
  */
 function stringifyKeyValue(key, value, quote, spaces) {
   // flatten arrays
-  console.log(value);
   if (Array.isArray(value)) {
     value = '[\n"' + value.join('","') + '",\n]';
   } else if (quote) {

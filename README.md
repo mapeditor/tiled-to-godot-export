@@ -160,7 +160,7 @@ Creating entities with these types will result in specific nodes to be created :
 
   Creates an empty `Node2D` at the specified position. Can be useful for defining spawn points for example.
 
-If present, the `group` custom string property will add the generated entity to the specified Godot scene group.
+If present, the `groups` custom string property will add the generated entity to the specified Godot scene groups. Accepts multiple groups via comma separation: `Group1, Group2`.
 
 ## Long term plans
 
