@@ -150,7 +150,7 @@ Legend: ticked = done, unticked = to do
 
 Creating entities with these types will result in specific nodes to be created :
 
-- type `Area`
+- type `Area2D`
 
   Creates an `Area2D` node in the scene, containing a `CollisionShape2D` with the rectangle set in the tiled map.
 

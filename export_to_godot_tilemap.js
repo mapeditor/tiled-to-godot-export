@@ -145,7 +145,7 @@ class GodotTilemapExporter {
                             region_enabled: true,
                             region_rect: `Rect2( ${tileOffset.x}, ${tileOffset.y}, ${object.tile.width}, ${object.tile.height} )`
                         });
-                    } else if (object.type == "Area" && object.width && object.height) {
+                    } else if (object.type == "Area2D" && object.width && object.height) {
                         // Creates an Area2D node with a rectangle shape inside
                         // Does not support rotation
                         const width = object.width / 2;
