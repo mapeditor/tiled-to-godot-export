@@ -100,7 +100,7 @@ class GodotTilemapExporter {
                     if (!ld.isEmpty) {
                         const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i + "_" + idx;
                         this.mapLayerToTileset(layer.name, ld.tilesetID);
-                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight, layer.property("groups"), parseInt(layer.properties()['z_index'], 10));
+                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, layer, ld.parent);
                     }
                 }
             } else if (layer.isObjectLayer) {
@@ -446,8 +446,11 @@ ${this.tileMapsString}
      * Template for a tilemap node
      * @returns {string}
      */
-    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, parent = ".", tileWidth = 16, tileHeight = 16, groups = undefined, zIndex) {
-        groups = splitCommaSeparated(groups);
+    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, layer, parent = ".") {
+        const tileWidth = layer.map.tileWidth || 16;
+        const tileHeight = layer.map.tileHeight || 16;
+        const groups = splitCommaSeparated(layer.property("groups"));
+        const zIndex = parseInt(layer.properties()['z_index'], 10);
         return stringifyNode({
             name: tileMapName,
             type: "TileMap",
