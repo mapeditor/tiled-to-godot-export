@@ -447,8 +447,8 @@ ${this.tileMapsString}
      * @returns {string}
      */
     getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, layer, parent = ".") {
-        const tileWidth = layer.map.tileWidth || 16;
-        const tileHeight = layer.map.tileHeight || 16;
+        const tileWidth = layer.map.tileWidth === undefined ? 16 : layer.map.tileWidth;
+        const tileHeight = layer.map.tileHeight === undefined ? 16 : layer.map.tileHeight;
         const groups = splitCommaSeparated(layer.property("groups"));
         const zIndex = parseInt(layer.properties()['z_index'], 10);
         return stringifyNode({
