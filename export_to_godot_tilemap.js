@@ -39,7 +39,7 @@ class GodotTilemapExporter {
 
     /**
      * Adds a new subresource to the genrated file
-     * 
+     *
      * @param {string} type the type of subresource
      * @param {object} contentProperties key:value map of properties
      * @returns {int} the created sub resource id
@@ -100,7 +100,7 @@ class GodotTilemapExporter {
                     if (!ld.isEmpty) {
                         const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i + "_" + idx;
                         this.mapLayerToTileset(layer.name, ld.tilesetID);
-                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, ld.parent, layer.map.tileWidth, layer.map.tileHeight, layer.property("groups"));
+                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, layer, ld.parent);
                     }
                 }
             } else if (layer.isObjectLayer) {
@@ -446,8 +446,11 @@ ${this.tileMapsString}
      * Template for a tilemap node
      * @returns {string}
      */
-    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, parent = ".", tileWidth = 16, tileHeight = 16, groups = undefined) {
-        groups = splitCommaSeparated(groups);
+    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, layer, parent = ".") {
+        const tileWidth = layer.map.tileWidth === undefined ? 16 : layer.map.tileWidth;
+        const tileHeight = layer.map.tileHeight === undefined ? 16 : layer.map.tileHeight;
+        const groups = splitCommaSeparated(layer.property("groups"));
+        const zIndex = parseInt(layer.properties()['z_index'], 10);
         return stringifyNode({
             name: tileMapName,
             type: "TileMap",
@@ -458,7 +461,8 @@ ${this.tileMapsString}
             cell_size: `Vector2( ${tileWidth}, ${tileHeight} )`,
             cell_custom_transform: `Transform2D( 16, 0, 0, 16, 0, 0 )`,
             format: "1",
-            tile_data: `PoolIntArray( ${poolIntArrayString} )`
+            tile_data: `PoolIntArray( ${poolIntArrayString} )`,
+            z_index: typeof zIndex === 'number' && !isNaN(zIndex) ? zIndex : undefined
         });
     }
 

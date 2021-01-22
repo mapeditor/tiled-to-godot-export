@@ -60,7 +60,7 @@ function splitCommaSeparated(str) {
 
 /**
  * Removes any undefined value with its key from an object
- * @param {object} obj 
+ * @param {object} obj
  */
 function removeUndefined(obj) {
   Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key])
@@ -70,14 +70,14 @@ function removeUndefined(obj) {
 /**
  * Translates key values defining a godot scene node to the expected TSCN format output
  * Passed keys must be strings. Values can be arrays (e.g. for groups)
- * 
+ *
  * @param {object} nodeProperties pair key/values for the "node" properties
  * @param {object} contentProperties pair key/values for the content properties
  * @return {string} TSCN scene node like so :
  *         ```
  *          [node key="value"]
  *          content_key = AnyValue
- *         ``` 
+ *         ```
  */
 function stringifyNode(nodeProperties, contentProperties = {}) {
   // remove undefined values from objects
@@ -91,7 +91,9 @@ function stringifyNode(nodeProperties, contentProperties = {}) {
   }
   str += ']\n';
   for (const [key, value] of Object.entries(contentProperties)) {
-    str += this.stringifyKeyValue(key, value, false, true) + '\n';
+    if (value !== undefined) {
+      str += this.stringifyKeyValue(key, value, false, true) + '\n';
+    }
   }
 
   return str;
@@ -99,11 +101,11 @@ function stringifyNode(nodeProperties, contentProperties = {}) {
 
 /**
  * Processes a key/value pair for a TSCN node
- * 
- * @param {string} key 
- * @param {string|array} value 
+ *
+ * @param {string} key
+ * @param {string|array} value
  * @param {bool} quote
- * @param {bool} spaces 
+ * @param {bool} spaces
  */
 function stringifyKeyValue(key, value, quote, spaces) {
   // flatten arrays
