@@ -85,12 +85,12 @@ class GodotTilemapExporter {
     /**
      * Creates the Tilemap nodes. One Tilemap per one layer from Tiled.
      */
-    setTileMapsString() {
+    setTileMapsString(target = this.map) {
         // noinspection JSUnresolvedVariable
-        for (let i = 0; i < this.map.layerCount; ++i) {
+        for (let i = 0; i < target.layerCount; ++i) {
 
             // noinspection JSUnresolvedFunction
-            let layer = this.map.layerAt(i);
+            let layer = target.layerAt(i);
 
             // noinspection JSUnresolvedVariable
             if (layer.isTileLayer) {
@@ -100,9 +100,18 @@ class GodotTilemapExporter {
                     if (!ld.isEmpty) {
                         const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i + "_" + idx;
                         this.mapLayerToTileset(layer.name, ld.tilesetID);
-                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, layer, ld.parent);
+                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, layer, this.getLayerParentage(layer));
                     }
                 }
+            } else if (layer.isGroupLayer) {
+                this.tileMapsString += stringifyNode({
+                    name: layer.name,
+                    type: "Node2D",
+                    parent: this.getLayerParentage(layer),
+                    groups: splitCommaSeparated(layer.property("groups"))
+                });
+
+                this.setTileMapsString(layer);
             } else if (layer.isObjectLayer) {
                 // create layer
                 this.tileMapsString += stringifyNode({
@@ -156,7 +165,7 @@ class GodotTilemapExporter {
                         this.tileMapsString += stringifyNode({
                             name: object.name,
                             type: "Area2D",
-                            parent: layer.name,
+                            parent: this.getLayerParentage(layer),
                             groups: groups
                         }, {
                             collision_layer: object.property("collision_layer"),
@@ -169,7 +178,7 @@ class GodotTilemapExporter {
                         this.tileMapsString += stringifyNode({
                             name: "CollisionShape2D",
                             type: "CollisionShape2D",
-                            parent: `${layer.name}/${object.name}`
+                            parent: `${this.getLayerParentage(layer)}/${object.name}`
                         }, {
                             shape: `SubResource( ${shapeId} )`,
                             position: `Vector2( ${objectPositionX}, ${objectPositionY} )`,
@@ -178,7 +187,7 @@ class GodotTilemapExporter {
                         this.tileMapsString += stringifyNode({
                             name: object.name,
                             type: "Node2D",
-                            parent: layer.name,
+                            parent: this.getLayerParentage(layer),
                             groups: groups
                         }, {
                             position: `Vector2( ${object.x}, ${object.y} )`
@@ -468,6 +477,19 @@ ${this.tileMapsString}
 
     mapLayerToTileset(layerName, tilesetID) {
         this.layersToTilesetIndex[layerName] = tilesetID;
+    }
+
+    getLayerParentage(layer, parentage) {
+        if (layer.parentLayer) {
+            parentage = !parentage ? layer.parentLayer.name : (layer.parentLayer.name + "/" + parentage);
+            if (layer.parentLayer.parentLayer)
+                return this.getLayerParentage(layer.parentLayer, parentage);
+        }
+
+        if (!parentage)
+            parentage = "."
+
+        return parentage;
     }
 }
 
