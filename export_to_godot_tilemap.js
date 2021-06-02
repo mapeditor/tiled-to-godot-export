@@ -86,6 +86,8 @@ class GodotTilemapExporter {
      * Creates the Tilemap nodes. One Tilemap per one layer from Tiled.
      */
     setTileMapsString() {
+        const mode = this.map.orientation === TileMap.Isometric ? 1 : undefined
+
         // noinspection JSUnresolvedVariable
         for (let i = 0; i < this.map.layerCount; ++i) {
 
@@ -100,7 +102,7 @@ class GodotTilemapExporter {
                     if (!ld.isEmpty) {
                         const tileMapName = idx === 0 ? layer.name || "TileMap " + i : ld.tileset.name || "TileMap " + i + "_" + idx;
                         this.mapLayerToTileset(layer.name, ld.tilesetID);
-                        this.tileMapsString += this.getTileMapTemplate(tileMapName, ld.tilesetID, ld.poolIntArrayString, layer, ld.parent);
+                        this.tileMapsString += this.getTileMapTemplate(tileMapName, mode, ld.tilesetID, ld.poolIntArrayString, layer, ld.parent);
                     }
                 }
             } else if (layer.isObjectLayer) {
@@ -446,7 +448,7 @@ ${this.tileMapsString}
      * Template for a tilemap node
      * @returns {string}
      */
-    getTileMapTemplate(tileMapName, tilesetID, poolIntArrayString, layer, parent = ".") {
+    getTileMapTemplate(tileMapName, mode, tilesetID, poolIntArrayString, layer, parent = ".") {
         const tileWidth = layer.map.tileWidth === undefined ? 16 : layer.map.tileWidth;
         const tileHeight = layer.map.tileHeight === undefined ? 16 : layer.map.tileHeight;
         const groups = splitCommaSeparated(layer.property("groups"));
@@ -460,7 +462,8 @@ ${this.tileMapsString}
             tile_set: `ExtResource( ${tilesetID} )`,
             cell_size: `Vector2( ${tileWidth}, ${tileHeight} )`,
             cell_custom_transform: `Transform2D( 16, 0, 0, 16, 0, 0 )`,
-            format: "1",
+            format: 1,
+            mode: mode,
             tile_data: `PoolIntArray( ${poolIntArrayString} )`,
             z_index: typeof zIndex === 'number' && !isNaN(zIndex) ? zIndex : undefined
         });

@@ -59,16 +59,7 @@ function splitCommaSeparated(str) {
 }
 
 /**
- * Removes any undefined value with its key from an object
- * @param {object} obj
- */
-function removeUndefined(obj) {
-  Object.keys(obj).forEach(key => obj[key] === undefined && delete obj[key])
-}
-
-
-/**
- * Translates key values defining a godot scene node to the expected TSCN format output
+ * Translates key values defining a Godot scene node to the expected TSCN format output.
  * Passed keys must be strings. Values can be arrays (e.g. for groups)
  *
  * @param {object} nodeProperties pair key/values for the "node" properties
@@ -80,14 +71,12 @@ function removeUndefined(obj) {
  *         ```
  */
 function stringifyNode(nodeProperties, contentProperties = {}) {
-  // remove undefined values from objects
-  removeUndefined(nodeProperties);
-  removeUndefined(contentProperties);
-
   let str = '\n';
   str += '[node';
   for (const [key, value] of Object.entries(nodeProperties)) {
-    str += ' ' + this.stringifyKeyValue(key, value, true, false);
+    if (value !== undefined) {
+      str += ' ' + this.stringifyKeyValue(key, value, true, false);
+    }
   }
   str += ']\n';
   for (const [key, value] of Object.entries(contentProperties)) {
