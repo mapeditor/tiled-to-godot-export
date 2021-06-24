@@ -51,9 +51,10 @@ class GodotTilemapExporter {
 
 [sub_resource type="${type}" id=${id}]
 `;
-        removeUndefined(contentProperties);
         for (const [key, value] of Object.entries(contentProperties)) {
-            this.subResourcesString += stringifyKeyValue(key, value, false, true) + '\n';
+            if (value !== undefined) {
+                this.subResourcesString += stringifyKeyValue(key, value, false, true) + '\n';
+            }
         }
 
         return id;
