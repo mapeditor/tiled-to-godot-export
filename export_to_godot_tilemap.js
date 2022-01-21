@@ -455,6 +455,7 @@ ${this.tileMapsString}
         const offsetHorizontal = layer.offset.x === undefined ? 0 : layer.offset.x;
         const offsetVertical = layer.offset.y === undefined ? 0 : layer.offset.y;
         const visible = layer.visible === undefined ? true : layer.visible;
+        const opacity = layer.opacity === undefined ? 1 : layer.opacity;
         const groups = splitCommaSeparated(layer.property("groups"));
         const zIndex = parseInt(layer.properties()['z_index'], 10);
         return stringifyNode({
@@ -464,6 +465,7 @@ ${this.tileMapsString}
             groups: groups
         }, {
             visible: visible,
+            modulate: `Color( 1, 1, 1, ${opacity} )`,
             position: `Vector2( ${offsetHorizontal}, ${offsetVertical} )`,
             tile_set: `ExtResource( ${tilesetID} )`,
             cell_size: `Vector2( ${tileWidth}, ${tileHeight} )`,
