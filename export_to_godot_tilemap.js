@@ -452,6 +452,8 @@ ${this.tileMapsString}
     getTileMapTemplate(tileMapName, mode, tilesetID, poolIntArrayString, layer, parent = ".") {
         const tileWidth = layer.map.tileWidth === undefined ? 16 : layer.map.tileWidth;
         const tileHeight = layer.map.tileHeight === undefined ? 16 : layer.map.tileHeight;
+        const offsetHorizontal = layer.offset.x === undefined ? 0 : layer.offset.x;
+        const offsetVertical = layer.offset.y === undefined ? 0 : layer.offset.y;
         const groups = splitCommaSeparated(layer.property("groups"));
         const zIndex = parseInt(layer.properties()['z_index'], 10);
         return stringifyNode({
@@ -460,6 +462,7 @@ ${this.tileMapsString}
             parent: parent,
             groups: groups
         }, {
+            position: `Vector2( ${offsetHorizontal}, ${offsetVertical} )`,
             tile_set: `ExtResource( ${tilesetID} )`,
             cell_size: `Vector2( ${tileWidth}, ${tileHeight} )`,
             cell_custom_transform: `Transform2D( 16, 0, 0, 16, 0, 0 )`,
