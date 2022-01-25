@@ -134,7 +134,7 @@ More about my struggles can be read in Tiled Forum or Godot reddit. Check the Co
 - [x] Export TileSets from Tiled standalone tileset files
 - [x] Orthogonal maps
 - [ ] Isometric, staggered, and hexagonal maps
-- [ ] Export visibility and opacity from layers
+- [x] Export visibility and opacity from layers
 - [x] Export collision shapes<sup>*</sup>
 - [ ] Export occluder shapes<sup>*</sup>
 - [x] Export navigation shapes<sup>*</sup>

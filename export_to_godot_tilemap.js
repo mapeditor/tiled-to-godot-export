@@ -62,7 +62,7 @@ class GodotTilemapExporter {
 
     /**
      * Generate a string with all tilesets in the map.
-     * Godot allows only one tileset per tilemap so if you use more than one tileset per layer it's n ot going to work.
+     * Godot allows only one tileset per tilemap so if you use more than one tileset per layer it's not going to work.
      * Godot supports several image textures per tileset but Tiled Editor doesn't.
      * Tiled editor supports only one tile
      * sprite image per tileset.
@@ -450,8 +450,6 @@ ${this.tileMapsString}
      * @returns {string}
      */
     getTileMapTemplate(tileMapName, mode, tilesetID, poolIntArrayString, layer, parent = ".") {
-        const tileWidth = layer.map.tileWidth === undefined ? 16 : layer.map.tileWidth;
-        const tileHeight = layer.map.tileHeight === undefined ? 16 : layer.map.tileHeight;
         const groups = splitCommaSeparated(layer.property("groups"));
         const zIndex = parseInt(layer.properties()['z_index'], 10);
         return stringifyNode({
@@ -460,8 +458,11 @@ ${this.tileMapsString}
             parent: parent,
             groups: groups
         }, {
+            visible: layer.visible,
+            modulate: `Color( 1, 1, 1, ${layer.opacity} )`,
+            position: `Vector2( ${layer.offset.x}, ${layer.offset.y} )`,
             tile_set: `ExtResource( ${tilesetID} )`,
-            cell_size: `Vector2( ${tileWidth}, ${tileHeight} )`,
+            cell_size: `Vector2( ${layer.map.tileWidth}, ${layer.map.tileHeight} )`,
             cell_custom_transform: `Transform2D( 16, 0, 0, 16, 0, 0 )`,
             format: 1,
             mode: mode,
