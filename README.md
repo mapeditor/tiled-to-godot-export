@@ -72,7 +72,7 @@ you've added `"projectRoot"`;
 
 If everything is fine when you go to _File -> Export As_, a new option should exist:
 
-`Gotod Tilemap format (*.tscn)`
+`Godot Tilemap format (*.tscn)`
 
 and for tilesets respectively:
 
