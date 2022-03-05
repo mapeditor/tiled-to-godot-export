@@ -63,7 +63,7 @@ class GodotTilemapExporter {
 
     /**
      * Generate a string with all tilesets in the map.
-     * Godot allows only one tileset per tilemap so if you use more than one tileset per layer it's n ot going to work.
+     * Godot allows only one tileset per tilemap so if you use more than one tileset per layer it's not going to work.
      * Godot supports several image textures per tileset but Tiled Editor doesn't.
      * Tiled editor supports only one tile
      * sprite image per tileset.
