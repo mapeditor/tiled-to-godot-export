@@ -64,27 +64,46 @@ function splitCommaSeparated(str) {
  *
  * @param {object} nodeProperties pair key/values for the "node" properties
  * @param {object} contentProperties pair key/values for the content properties
+ * @param {object} metaProperties pair key/values for the meta properties
  * @return {string} TSCN scene node like so :
  *         ```
  *          [node key="value"]
  *          content_key = AnyValue
+			__meta__ = {
+			"content_key" : AnyValue
+			}
  *         ```
  */
-function stringifyNode(nodeProperties, contentProperties = {}) {
+function stringifyNode(nodeProperties, contentProperties = {}, metaProperties = {}) {
   let str = '\n';
   str += '[node';
   for (const [key, value] of Object.entries(nodeProperties)) {
     if (value !== undefined) {
-      str += ' ' + this.stringifyKeyValue(key, value, true, false);
+      str += ' ' + this.stringifyKeyValue(key, value, false, true, false);
     }
   }
   str += ']\n';
   for (const [key, value] of Object.entries(contentProperties)) {
     if (value !== undefined) {
-      str += this.stringifyKeyValue(key, value, false, true) + '\n';
+      str += this.stringifyKeyValue(key, value, false, false, true) + '\n';
     }
   }
-
+  mProps = Object.entries(metaProperties)
+  if(mProps.length > 0) {
+	str += '__meta__ = {\n';
+	var count = 0;
+	for(const [key, value] of mProps) {
+		if (count++ > 0){
+			str += ",\n";
+		}
+		var quoteValue = true;
+		if(typeof value === 'number' || typeof value === 'boolean') {
+			quoteValue = false;
+		}
+		str += this.stringifyKeyValue(key, value, true, quoteValue, true, ":");
+	}
+	str += '\n}\n';
+  }
   return str;
 }
 
@@ -96,15 +115,18 @@ function stringifyNode(nodeProperties, contentProperties = {}) {
  * @param {bool} quote
  * @param {bool} spaces
  */
-function stringifyKeyValue(key, value, quote, spaces) {
+function stringifyKeyValue(key, value, quoteKey, quoteValue, spaces, separator = "=") {
   // flatten arrays
   if (Array.isArray(value)) {
     value = '[\n"' + value.join('","') + '",\n]';
-  } else if (quote) {
+  } else if (quoteValue) {
     value = `"${value}"`;
   }
-  if (!spaces) {
-    return `${key}=${value}`;
+  if(quoteKey) {
+	key = `"${key}"`;
   }
-  return `${key} = ${value}`;
+  if (!spaces) {
+    return `${key}` + separator + `${value}`;
+  }
+  return `${key} ` + separator + ` ${value}`;
 }
