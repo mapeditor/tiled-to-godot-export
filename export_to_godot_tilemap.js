@@ -536,6 +536,9 @@ ${this.tileMapsString}
 			this.merge_properties(
 				layer.properties(),
 				{
+					visible: layer.visible,
+					modulate: `Color( 1, 1, 1, ${layer.opacity} )`,
+					position: `Vector2( ${layer.offset.x}, ${layer.offset.y} )`,
 					tile_set: `ExtResource( ${tilesetID} )`,
           			cell_size: `Vector2( ${layer.map.tileWidth}, ${layer.map.tileHeight} )`,
 					cell_custom_transform: `Transform2D( 16, 0, 0, 16, 0, 0 )`,
