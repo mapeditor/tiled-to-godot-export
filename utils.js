@@ -69,9 +69,9 @@ function splitCommaSeparated(str) {
  *         ```
  *          [node key="value"]
  *          content_key = AnyValue
-			__meta__ = {
-			"content_key" : AnyValue
-			}
+            __meta__ = {
+            "content_key" : AnyValue
+            }
  *         ```
  */
 function stringifyNode(nodeProperties, contentProperties = {}, metaProperties = {}) {
@@ -90,19 +90,19 @@ function stringifyNode(nodeProperties, contentProperties = {}, metaProperties = 
   }
   mProps = Object.entries(metaProperties)
   if(mProps.length > 0) {
-	str += '__meta__ = {\n';
-	var count = 0;
-	for(const [key, value] of mProps) {
-		if (count++ > 0){
-			str += ",\n";
-		}
-		var quoteValue = true;
-		if(typeof value === 'number' || typeof value === 'boolean') {
-			quoteValue = false;
-		}
-		str += this.stringifyKeyValue(key, value, true, quoteValue, true, ":");
-	}
-	str += '\n}\n';
+    str += '__meta__ = {\n';
+    var count = 0;
+    for(const [key, value] of mProps) {
+        if (count++ > 0){
+            str += ",\n";
+        }
+        var quoteValue = true;
+        if(typeof value === 'number' || typeof value === 'boolean') {
+            quoteValue = false;
+        }
+        str += this.stringifyKeyValue(key, value, true, quoteValue, true, ":");
+    }
+    str += '\n}\n';
   }
   return str;
 }
@@ -123,7 +123,7 @@ function stringifyKeyValue(key, value, quoteKey, quoteValue, spaces, separator =
     value = `"${value}"`;
   }
   if(quoteKey) {
-	key = `"${key}"`;
+    key = `"${key}"`;
   }
   if (!spaces) {
     return `${key}` + separator + `${value}`;
