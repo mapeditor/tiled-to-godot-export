@@ -217,7 +217,7 @@ class GodotTilemapExporter {
                                 position: `Vector2( ${object.x}, ${object.y} )`
                             }
                         ),
-                        this.meta_properties(layer.properties())
+                        this.meta_properties(object.properties())
                     );
                 }
             }
