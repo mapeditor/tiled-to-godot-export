@@ -142,8 +142,9 @@ More about my struggles can be read in Tiled Forum or Godot reddit. Check the Co
 - [ ] Support for image layers
 - [x] Support for tile objects, which are exported to Godot as Sprite nodes. (Other types of objects are not yet included.)
 - [ ] Full support for object layers, which are exported as StaticBody2D, Area2D or LightOccluder2D for shapes (depending on the type property) and as Sprite for tiles
-- [ ] Support for group layers, which are exported as Node2Ds
-- [ ] Custom properties for maps, layers, tilesets, and objects are exported as metadata. Custom properties on tiles can be exported into the TileSet resource
+- [x] Support for group layers
+- [x] Custom properties for maps, layers, and objects are exported as metadata. 
+- [ ] Custom properties for tilesets on tiles can be exported into the TileSet resource
 - [ ] Map background layer exported as a parallax background
 
 Legend: ticked = done, unticked = to do
@@ -165,6 +166,30 @@ Creating entities with these types will result in specific nodes to be created :
   Creates an empty `Node2D` at the specified position. Can be useful for defining spawn points for example.
 
 If present, the `groups` custom string property will add the generated entity to the specified Godot scene groups. Accepts multiple groups via comma separation: `Group1, Group2`.
+
+## Godot Custom Parameters
+
+This plugin supports exporting custom parameters as Godot node parameters and Godot meta parameters.
+
+- To set the Godot node name for the TileMap create a property that begins with "godot:name". The value of the property will be the name of the Node when imported into Godot.
+  Example: godot:name = MapName
+  
+- To set the Godot node type for the TileMap create a property that begins with "godot:type". The value of the property should be the name of a built in Godot Type.
+  Example: godot:type = Node2D
+
+- To set the Godot node name for the Group Layer create a property that begins with "godot:name". The value of the property will be the name of the Node when imported into Godot.
+  Example: godot:name = GroupName  
+  
+- To set the Godot node type for the Group Layer create a property that begins with "godot:type". The value of the property should be the name of a built in Godot Type.
+  Example: godot:type = YSort
+
+
+- To set Godot node parameters add a custom property on that object in Tiled that begins with "godot:node:". The value after the colon should be the full name of the paramter to be set in Godot.
+  Example: godot:node:cell_y_sort = true
+  
+- To set Godot node meta parameters add a custom property on that object in Tiled that begins with "godot:meta:". The value after the colon should be the full name of the meta paramter to be set in Godot.
+  Example: godot:meta:custom_parameter = 123
+
 
 ## Long term plans
 
