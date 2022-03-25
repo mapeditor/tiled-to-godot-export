@@ -172,22 +172,28 @@ If present, the `groups` custom string property will add the generated entity to
 This plugin supports exporting custom parameters as Godot node parameters and Godot meta parameters.
 
 - To set the Godot node name for the TileMap create a property that begins with "godot:name". The value of the property will be the name of the Node when imported into Godot.
+  
   Example: godot:name = MapName
   
 - To set the Godot node type for the TileMap create a property that begins with "godot:type". The value of the property should be the name of a built in Godot Type.
+  
   Example: godot:type = Node2D
 
 - To set the Godot node name for the Group Layer create a property that begins with "godot:name". The value of the property will be the name of the Node when imported into Godot.
+  
   Example: godot:name = GroupName  
   
 - To set the Godot node type for the Group Layer create a property that begins with "godot:type". The value of the property should be the name of a built in Godot Type.
+  
   Example: godot:type = YSort
 
 
 - To set Godot node parameters add a custom property on that object in Tiled that begins with "godot:node:". The value after the colon should be the full name of the paramter to be set in Godot.
+  
   Example: godot:node:cell_y_sort = true
   
 - To set Godot node meta parameters add a custom property on that object in Tiled that begins with "godot:meta:". The value after the colon should be the full name of the meta paramter to be set in Godot.
+  
   Example: godot:meta:custom_parameter = 123
 
 
