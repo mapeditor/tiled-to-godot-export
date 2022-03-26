@@ -7,7 +7,7 @@ class GodotTilesetExporter {
         this.fileName = fileName;
         // noinspection JSUnresolvedFunction
         this.projectRoot = getResPath(this.tileset.property("projectRoot"), this.tileset.image);
-		this.filePath = this.tileset.image.substring(0, this.tileset.image.lastIndexOf("/"));
+        this.filePath = this.tileset.image.substring(0, this.tileset.image.lastIndexOf("/"));
         this.spriteImagePath = this.tileset.image.replace(this.filePath, this.projectRoot);
         // Strip leading slashes to prevent invalid triple slashes in Godot res:// path:
         this.spriteImagePath = this.spriteImagePath.replace(/^\/+/, '');

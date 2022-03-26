@@ -77,13 +77,13 @@ class GodotTilemapExporter {
             this.extResourceId = index + 1;
             this.tilesetsIndex.set(tileset.name, this.extResourceId);
             // noinspection JSUnresolvedVariable
-			let tilesetPath = tileset.asset.fileName
-			let slashIndex = tileset.asset.fileName.lastIndexOf("/");
-			if(slashIndex >= 0) {
-				let filePath = tileset.asset.fileName.substring(0, slashIndex);
-				tilesetPath = tilesetPath.replace(filePath, this.projectRoot)
+            let tilesetPath = tileset.asset.fileName
+            let slashIndex = tileset.asset.fileName.lastIndexOf("/");
+            if(slashIndex >= 0) {
+                let filePath = tileset.asset.fileName.substring(0, slashIndex);
+                tilesetPath = tilesetPath.replace(filePath, this.projectRoot)
             }
-			tilesetPath = tilesetPath.replace('.tsx', '.tres');
+            tilesetPath = tilesetPath.replace('.tsx', '.tres');
             this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "TileSet");
         }
 
@@ -111,8 +111,8 @@ class GodotTilemapExporter {
             for (let idx = 0; idx < layerData.length; idx++) {
                 const ld = layerData[idx];
                 if (!ld.isEmpty) {
-					let layerName = layer.name || "TileMap " + layer.id
-					let tilesetName = ld.tileset.name || "TileSet " + ld.tilesetID;
+                    let layerName = layer.name || "TileMap " + layer.id
+                    let tilesetName = ld.tileset.name || "TileSet " + ld.tilesetID;
                     const tileMapName = layerName + " - " + tilesetName;
                     this.mapLayerToTileset(layer.name, ld.tilesetID);
                     this.tileMapsString += this.getTileMapTemplate(tileMapName, mode, ld.tilesetID, ld.poolIntArrayString, layer, layer_parent);
@@ -138,13 +138,13 @@ class GodotTilemapExporter {
                         this.extResourceId = this.extResourceId + 1;
                         textureResourceId = this.extResourceId;
                         this.tilesetsIndex.set(tilesetsIndexKey, this.extResourceId);
-						let tilesetPath = object.tile.tileset.image;
-						let slashIndex = object.tile.tileset.image.lastIndexOf("/");
-						if(slashIndex >= 0) {
-							let filePath = object.tile.tileset.image.substring(0, slashIndex);
-							tilesetPath = object.tile.tileset.image.replace(filePath, this.projectRoot);
+                        let tilesetPath = object.tile.tileset.image;
+                        let slashIndex = object.tile.tileset.image.lastIndexOf("/");
+                        if(slashIndex >= 0) {
+                            let filePath = object.tile.tileset.image.substring(0, slashIndex);
+                            tilesetPath = object.tile.tileset.image.replace(filePath, this.projectRoot);
                         }
-						this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "Texture");
+                        this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "Texture");
                     } else {
                         textureResourceId = this.tilesetsIndex.get(tilesetsIndexKey);
                     }
