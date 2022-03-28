@@ -5,8 +5,6 @@ class GodotTilemapExporter {
     constructor(map, fileName) {
         this.map = map;
         this.fileName = fileName;
-        // noinspection JSUnresolvedFunction
-        this.projectRoot = getResPath(this.map.property("projectRoot"), fileName);
         this.tileOffset = 65536;
         this.tileMapsString = "";
         this.tilesetsString = "";
@@ -34,7 +32,7 @@ class GodotTilemapExporter {
         this.setTilesetsString();
         this.setTileMapsString();
         this.writeToFile();
-        console.info(`Tilemap exported successfully to ${this.fileName}`);
+        tiled.log(`Tilemap exported successfully to ${this.fileName}`);
     }
 
     /**
@@ -77,14 +75,9 @@ class GodotTilemapExporter {
             this.extResourceId = index + 1;
             this.tilesetsIndex.set(tileset.name, this.extResourceId);
             // noinspection JSUnresolvedVariable
-            let tilesetPath = tileset.asset.fileName
-            let slashIndex = tileset.asset.fileName.lastIndexOf("/");
-            if(slashIndex >= 0) {
-                let filePath = tileset.asset.fileName.substring(0, slashIndex);
-                tilesetPath = tilesetPath.replace(filePath, this.projectRoot)
-            }
-            tilesetPath = tilesetPath.replace('.tsx', '.tres');
-            this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "TileSet");
+			let tilesetPath = getResPath(this.map.property("projectRoot"), tileset.asset.fileName);
+			let tilesetName = FileInfo.fileName(tileset.asset.fileName).replace('.tsx', '.tres');
+            this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, FileInfo.joinPaths(tilesetPath, tilesetName), "TileSet");
         }
 
     }
@@ -138,13 +131,9 @@ class GodotTilemapExporter {
                         this.extResourceId = this.extResourceId + 1;
                         textureResourceId = this.extResourceId;
                         this.tilesetsIndex.set(tilesetsIndexKey, this.extResourceId);
-                        let tilesetPath = object.tile.tileset.image;
-                        let slashIndex = object.tile.tileset.image.lastIndexOf("/");
-                        if(slashIndex >= 0) {
-                            let filePath = object.tile.tileset.image.substring(0, slashIndex);
-                            tilesetPath = object.tile.tileset.image.replace(filePath, this.projectRoot);
-                        }
-                        this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "Texture");
+                        let tilesetPath = getResPath(this.map.property("projectRoot"), object.tile.tileset.image);
+						let tilesetName = FileInfo.fileName(object.tile.tileset.image).replace('.tsx', '.tres');
+                        this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, FileInfo.joinPaths(tilesetPath, tilesetName), "Texture");
                     } else {
                         textureResourceId = this.tilesetsIndex.get(tilesetsIndexKey);
                     }
@@ -373,7 +362,7 @@ class GodotTilemapExporter {
             if (current.tileset !== null && current.poolIntArrayString !== "") {
                 current.tilesetID = this.getTilesetIDByTileset(current.tileset);
             } else {
-                console.warn(`Error: The layer ${layer.name} is empty and has been skipped!`);
+                tiled.log(`Error: The layer ${layer.name} is empty and has been skipped!`);
             }
         }
 

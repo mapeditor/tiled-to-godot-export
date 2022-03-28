@@ -6,9 +6,9 @@ class GodotTilesetExporter {
         this.tileset = tileset;
         this.fileName = fileName;
         // noinspection JSUnresolvedFunction
-        this.projectRoot = getResPath(this.tileset.property("projectRoot"), this.tileset.image);
-        this.filePath = this.tileset.image.substring(0, this.tileset.image.lastIndexOf("/"));
-        this.spriteImagePath = this.tileset.image.replace(this.filePath, this.projectRoot);
+        this.imagePath = getResPath(this.tileset.property("projectRoot"), this.tileset.image);
+        this.spriteImagePath = FileInfo.joinPaths(this.imagePath, FileInfo.fileName(this.tileset.image));
+		
         // Strip leading slashes to prevent invalid triple slashes in Godot res:// path:
         this.spriteImagePath = this.spriteImagePath.replace(/^\/+/, '');
         this.shapesResources = "";
@@ -20,13 +20,12 @@ class GodotTilesetExporter {
     write() {
         this.iterateTiles();
         this.writeToFile();
-        console.info(`Tileset exported successfully to ${this.fileName}`);
+        tiled.log(`Tileset exported successfully to ${this.fileName}`);
     }
 
     writeToFile() {
         // noinspection JSUnresolvedVariable
         const file = new TextFile(this.fileName, TextFile.WriteOnly);
-        // log(this.tileset.imageWidth, this.tileset.imageHeight);
         let tilesetTemplate = this.getTilesetTemplate();
         file.write(tilesetTemplate);
         file.commit();
