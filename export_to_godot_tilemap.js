@@ -75,8 +75,8 @@ class GodotTilemapExporter {
             this.extResourceId = index + 1;
             this.tilesetsIndex.set(tileset.name, this.extResourceId);
             // noinspection JSUnresolvedVariable
-			let tilesetPath = getResPath(this.map.property("projectRoot"), tileset.asset.fileName);
-			let tilesetName = FileInfo.fileName(tileset.asset.fileName).replace('.tsx', '.tres');
+            let tilesetPath = getResPath(this.map.property("projectRoot"), tileset.asset.fileName);
+            let tilesetName = FileInfo.fileName(tileset.asset.fileName).replace('.tsx', '.tres');
             this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, FileInfo.joinPaths(tilesetPath, tilesetName), "TileSet");
         }
 
@@ -131,9 +131,9 @@ class GodotTilemapExporter {
                         this.extResourceId = this.extResourceId + 1;
                         textureResourceId = this.extResourceId;
                         this.tilesetsIndex.set(tilesetsIndexKey, this.extResourceId);
-                        let tilesetPath = getResPath(this.map.property("projectRoot"), object.tile.tileset.image);
-						let tilesetName = FileInfo.fileName(object.tile.tileset.image).replace('.tsx', '.tres');
-                        this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, FileInfo.joinPaths(tilesetPath, tilesetName), "Texture");
+                        let tileImagePath = getResPath(this.map.property("projectRoot"), object.tile.tileset.image);
+                        let tileImageName = FileInfo.fileName(object.tile.tileset.image);
+                        this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, FileInfo.joinPaths(tileImagePath, tileImageName), "Texture");
                     } else {
                         textureResourceId = this.tilesetsIndex.get(tilesetsIndexKey);
                     }
