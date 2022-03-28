@@ -60,8 +60,11 @@ If you prefer watching check the video in YouTube:
 ### Setting projectRoot `res://`
 
 The exporter needs to know where `res://` is. By default, it's in the same directory where the Tiled files are being saved.
-You can override it with a tile/map custom property `projectRoot : string` that is either relative to the file you are exporting (starting with a `.`), or absolute path,
+You can override this path with a custom property `projectRoot : string` that is either relative to the file you are exporting (starting with a `.`), or absolute path,
 Either way the value of projectRoot is transformed to a resource path which Godot use.
+
+* When placed on a Tiled TileMap (.tmx) object it will define where the Tileset objects (.tres) are located in the exported TileMap (.tscn).
+* When placed on a Tiled TileSet (.tsx) object it will define where the Image is located in the exported TileMap (.tres).
 
 **_!!! Pay attention to the "/" instead of standard windows "\\".
 Single Backslash "\\" is used for escaping special symbols._**
