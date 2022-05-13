@@ -39,7 +39,7 @@ When you want to add these plugins to your Tiled installation:
   Tiled extension directory is:
 
   - **Windows**
-   `C:/Users/<USER>/AppData/Local/Tiled/extensions/`
+   `C:/Users/%USERNAME%/AppData/Local/Tiled/extensions/`
   - **macOS**
   `~/Library/Preferences/Tiled/extensions/`
   - **Linux**
