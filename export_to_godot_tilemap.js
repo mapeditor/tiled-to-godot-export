@@ -181,7 +181,7 @@ class GodotTilemapExporter {
                                 collision_mask: object.property("collision_mask")
                             }
                         ),
-                        this.meta_properties(layer.properties())
+                        this.meta_properties(object.properties())
                     );
 
                     const shapeId = this.addSubResource("RectangleShape2D", {
@@ -200,7 +200,7 @@ class GodotTilemapExporter {
                                 position: `Vector2( ${objectPositionX}, ${objectPositionY} )`,
                             }
                         ),
-                        this.meta_properties(layer.properties())
+                        {}
                     );
                 } else if (object.type == "Node2D") {
                     this.tileMapsString += stringifyNode(
