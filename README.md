@@ -105,9 +105,11 @@ if Input.is_action_just_pressed("reload_scene"):
 ```
 Don't forget to add key/mouse/controller mapping for the "reload_scene" action ;)
 
-### Tile layer z index
+### Z index for tile layer and single tile
 
-Can set the z-index for the tilelayer by adding a custom property `z_index`, this will set the z-index of the tile layer in the scene file.
+You can set the z-index for the whole tilelayer by adding a custom property `z_index`. This will set the z-index of the tile layer in the scene file.
+
+You can also set the z-index for a single tile in a tileset by adding a custom property `godot:z_index` to the tile.
 
 ### Tileset objects for collisions & navigation
 
