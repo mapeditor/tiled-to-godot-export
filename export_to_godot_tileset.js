@@ -53,10 +53,11 @@ class GodotTilesetExporter {
                 autotileCoordinates.y += 1;
             }
 
-            if (tile.properties()['godot:z_index'] !== undefined) {
-                const z_index = parseFloat(tile.properties()['godot:z_index']);
-                if (isNaN(z_index)) tiled.warn(`Skipping export of godot:z_index on tile with id ${tile.id} because it can not be converted to float. value: ${tile.properties()['godot:z_index']}`);
-                else this.zIndexMap.push([autotileCoordinates.x, autotileCoordinates.y, z_index]);
+            const zIndex = tile.property('godot:z_index');
+            if (zIndex !== undefined) {
+                const zIndexFloat = parseFloat(zIndex);
+                if (isNaN(zIndexFloat)) tiled.warn(`Skipping export of godot:z_index on tile with id ${tile.id} because it can not be converted to float. value: ${zIndex}`);
+                else this.zIndexMap.push([autotileCoordinates.x, autotileCoordinates.y, zIndexFloat]);
             }
 
             // noinspection JSUnresolvedVariable
