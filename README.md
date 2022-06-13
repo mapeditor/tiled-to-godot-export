@@ -109,7 +109,7 @@ Don't forget to add key/mouse/controller mapping for the "reload_scene" action ;
 
 You can set the z-index for the whole tilelayer by adding a custom property `z_index`. This will set the z-index of the tile layer in the scene file.
 
-You can also set the z-index for a single tile in a tileset by adding a custom property `godot:z_index` to the tile.
+You can also set the z-index for tiles in a tileset by adding a custom float property `godot:z_index` to the tile. This is stored in the exported tileset file.
 
 ### Tileset objects for collisions & navigation
 
