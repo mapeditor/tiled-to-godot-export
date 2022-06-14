@@ -14,6 +14,7 @@ class GodotTilesetExporter {
         this.shapesResources = "";
         this.shapes = "";
         this.navpolyMap = [];
+        this.zIndexMap = [];
         this.firstShapeID = "0";
     };
 
@@ -52,6 +53,13 @@ class GodotTilesetExporter {
                 autotileCoordinates.y += 1;
             }
 
+            const zIndex = tile.property('godot:z_index');
+            if (zIndex !== undefined) {
+                const zIndexFloat = parseFloat(zIndex);
+                if (isNaN(zIndexFloat)) tiled.warn(`Skipping export of godot:z_index on tile with id ${tile.id} because it can not be converted to float. value: ${zIndex}`);
+                else this.zIndexMap.push([autotileCoordinates.x, autotileCoordinates.y, zIndexFloat]);
+            }
+
             // noinspection JSUnresolvedVariable
             if (tile.objectGroup !== null) {
 
@@ -60,7 +68,6 @@ class GodotTilesetExporter {
 
                 // noinspection JSUnresolvedVariable
                 if (tileObjects.length > 0) {
-
                     // noinspection JSUnresolvedVariable
                     for (let oIndex = 0; oIndex < tileObjects.length; oIndex++) {
 
@@ -79,7 +86,6 @@ class GodotTilesetExporter {
             }
 
             autotileCoordinates.x += 1;
-
         }
 
         this.shapes = this.shapes.replace(/,\s*$/, "");
@@ -141,7 +147,7 @@ ${this.shapesResources}[resource]
 0/autotile/occluder_map = [  ]
 0/autotile/navpoly_map = [ ${this.navpolyMap.join(', ')} ]
 0/autotile/priority_map = [  ]
-0/autotile/z_index_map = [  ]
+0/autotile/z_index_map = [ ${this.zIndexMap.map(item => `Vector3( ${item.join(', ')} )`).join(', ')} ]
 0/occluder_offset = Vector2( 0, 0 )
 0/navigation_offset = Vector2( 0, 0 )
 0/shape_offset = Vector2( 0, 0 )
