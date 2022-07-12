@@ -59,19 +59,18 @@ If you prefer watching check the video in YouTube:
 
 ### Setting projectRoot `res://`
 
-The exporter needs to know where `res://` is. By default, it's in the same directory where the Tiled files are being saved.
-You can override this path with a custom property `projectRoot : string` that is either relative to the file you are exporting (starting with a `.`), or absolute path,
-Either way the value of projectRoot is transformed to a resource path which Godot use.
+The exporter needs to know where `res://` is so when you export to a subfolder in your Godot project all the relative paths for the resources `(res://)` are set correctly and relative to the project root. `res://` is equivalent to the location of `project.godot` in your Godot project.
 
-* When placed on a Tiled TileMap (.tmx) object it will define where the Tileset objects (.tres) are located in the exported TileMap (.tscn).
-* When placed on a Tiled TileSet (.tsx) object it will define where the Image is located in the exported TileMap (.tres).
+**By default, the exporter expects the Tiled files to be saved in a subfolder of your Godot project and will determine the project root automatically. Setting `projectRoot` is no longer required.**
+
+If needed, you can override this path with a custom property `projectRoot : string` that is either relative to the file you are exporting (starting with a `.`) or an absolute path.
+Either way, the value of `projectRoot` is transformed to the `res://` resource path which Godot uses and should be equivalent to the location of `project.godot`.
+
+* When placed on a Tiled TileMap (.tmx) object it will be used as the root to determine the relative resource path to the Tileset objects (.tres) used in the exported TileMap (.tscn).
+* When placed on a Tiled TileSet (.tsx) object it will be used as the root to determine the relative resource path to the Image used in the exported TileMap (.tres).
 
 **_!!! Pay attention to the "/" instead of standard windows "\\".
 Single Backslash "\\" is used for escaping special symbols._**
-
-This is needed so when you export to a subfolder in your Godot project all the relative
-paths for the resources `(res://)` are set correctly and relative to the custom property
-you've added `"projectRoot"`;
 
 If everything is fine when you go to _File -> Export As_, a new option should exist:
 
