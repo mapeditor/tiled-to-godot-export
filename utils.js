@@ -10,24 +10,47 @@ function logk(data) {
   console.log(Object.keys(data));
 }
 
+/**
+ * Determines the project root of a Godot project, which is the equivalent of 'res://' within Godot.
+ * There are three possible inputs for projectRoot:
+ * - absolute: This defines the projectRoot. Ex: getResPath('C:/project', 'C:/project/map/tileset.tres') => 'C:/project'
+ * - relative: This defines the projectRoot relative to the outputPath. Ex: getResPath('./..', 'C:/project/map/tileset.tres') => 'C:/project'
+ * - undefined: Attempts to automatically determine the projectRoot. Ex: getResPath(undefined, 'C:/project/map/tileset.tres') => 'C:/project'
+ * Information on file paths in Godot: https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html
+ *
+ * @param {string} projectRoot desired project root path, which can be an absolute or relative path
+ * @param {string} outputPath full path and name of destination file
+ * @return {string} project root path, which is the equivalent of 'res://'
+ */
 function getResPath(projectRoot, outputPath) {
   const p = outputPath.split('/').slice(0, -1)
-  // check for projectRoot
-  // If projectRoot is not set, set it to current file's location
+
+  // If projectRoot is not set, attempt to automatically determine projectRoot by searching for godot project file
   if (!projectRoot) {
-    projectRoot = p.join('/')
+    const out = p
+    outputPath.split('/').every(_ => {
+      var godotProjectFile = FileInfo.joinPaths(out.join('/'), 'project.godot');
+      if (!File.exists(godotProjectFile)) {
+        out.pop()
+        return true;
+      }
+      return false;
+    })
+    projectRoot = out.join('/')
   }
   projectRoot = projectRoot.replace(/\\/g, '/')
-  // Use it as absolute, if it doesn't start with ".", relative if it does
+
+  // Use projectRoot as absolute if it doesn't start with ".", relative if it does
   if (projectRoot[0] === '.') {
     const out = p
-    projectRoot.split('/').forEach((segment, i) => {
+    projectRoot.split('/').forEach((segment) => {
       if (segment === '..') {
         out.pop()
       }
     })
     projectRoot = out.join('/')
   }
+
   return projectRoot
 }
 
