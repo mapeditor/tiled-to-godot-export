@@ -11,47 +11,64 @@ function logk(data) {
 }
 
 /**
- * Determines the project root of a Godot project, which is the equivalent of 'res://' within Godot.
- * There are three possible inputs for projectRoot:
- * - absolute: This defines the projectRoot. Ex: getResPath('C:/project', 'C:/project/map/tileset.tres') => 'C:/project'
- * - relative: This defines the projectRoot relative to the outputPath. Ex: getResPath('./..', 'C:/project/map/tileset.tres') => 'C:/project'
- * - undefined: Attempts to automatically determine the projectRoot. Ex: getResPath(undefined, 'C:/project/map/tileset.tres') => 'C:/project'
+ * Returns a full res path to a file.
+ * 
+ * If relativePath is defined, uses relativePath to determine the res path.
+ * If relativePath is undefined, uses projectRoot to determine the res path.
+ * If relativePath is undefined and projectRoot is undefined, automatically determines the res path.
+ * 
  * Information on file paths in Godot: https://docs.godotengine.org/en/stable/tutorials/io/data_paths.html
  *
- * @param {string} projectRoot desired project root path, which can be an absolute or relative path
- * @param {string} outputPath full path and name of destination file
- * @return {string} project root path, which is the equivalent of 'res://'
+ * @param {string} projectRoot desired project root path, which can be an absolute or relative path to the outputPath. Ex: 'C:/project' or './../..'
+ * @param {string} relativePath relative path to file. Ex: '/maps/level1'
+ * @param {string} outputPath full path and name of destination file. Ex: 'C:/project/maps/level1/tileset.tres'
+ * @returns {string} full relative path to file to be included in a 'res://' path. Ex: 'maps/level1/tileset.tres'
  */
-function getResPath(projectRoot, outputPath) {
-  const p = outputPath.split('/').slice(0, -1)
+function getResPath(projectRoot, relativePath, outputPath) {
+  let fullResPath = ''
+  if (relativePath) {
+    // Replace all backslashes with forward slashes
+    relativePath = relativePath.replace(/\\/g, '/');
 
-  // If projectRoot is not set, attempt to automatically determine projectRoot by searching for godot project file
-  if (!projectRoot) {
-    const out = p
-    outputPath.split('/').every(_ => {
-      var godotProjectFile = FileInfo.joinPaths(out.join('/'), 'project.godot');
-      if (!File.exists(godotProjectFile)) {
-        out.pop()
-        return true;
-      }
-      return false;
-    })
-    projectRoot = out.join('/')
+    fullResPath = FileInfo.joinPaths(relativePath, FileInfo.fileName(outputPath));
+  } else {
+    const p = outputPath.split('/').slice(0, -1)
+
+    // If projectRoot is not set, attempt to automatically determine projectRoot by searching for godot project file
+    if (!projectRoot) {
+      const out = p
+      outputPath.split('/').every(_ => {
+        let godotProjectFile = FileInfo.joinPaths(out.join('/'), 'project.godot');
+        if (!File.exists(godotProjectFile)) {
+          out.pop()
+          return true;
+        }
+        return false;
+      })
+      projectRoot = out.join('/')
+    }
+
+    // Replace all backslashes with forward slashes
+    projectRoot = projectRoot.replace(/\\/g, '/');
+  
+    // Use projectRoot as absolute if it doesn't start with ".", relative if it does
+    if (projectRoot[0] === '.') {
+      const out = p
+      projectRoot.split('/').forEach((segment) => {
+        if (segment === '..') {
+          out.pop()
+        }
+      })
+      projectRoot = out.join('/')
+    }
+  
+    fullResPath = outputPath.replace(projectRoot, "");
   }
-  projectRoot = projectRoot.replace(/\\/g, '/')
 
-  // Use projectRoot as absolute if it doesn't start with ".", relative if it does
-  if (projectRoot[0] === '.') {
-    const out = p
-    projectRoot.split('/').forEach((segment) => {
-      if (segment === '..') {
-        out.pop()
-      }
-    })
-    projectRoot = out.join('/')
-  }
+  // Strip leading slashes to prevent invalid triple slashes in Godot res:// path
+  fullResPath = fullResPath.replace(/^\/+/, '');
 
-  return projectRoot
+  return fullResPath
 }
 
 /**
@@ -88,7 +105,7 @@ function splitCommaSeparated(str) {
  * @param {object} nodeProperties pair key/values for the "node" properties
  * @param {object} contentProperties pair key/values for the content properties
  * @param {object} metaProperties pair key/values for the meta properties
- * @return {string} TSCN scene node like so :
+ * @returns {string} TSCN scene node like so :
  *         ```
  *          [node key="value"]
  *          content_key = AnyValue

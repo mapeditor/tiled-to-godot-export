@@ -5,8 +5,6 @@ class GodotTilemapExporter {
     constructor(map, fileName) {
         this.map = map;
         this.fileName = fileName;
-        // noinspection JSUnresolvedFunction
-        this.projectRoot = getResPath(this.map.property("projectRoot"), fileName);
         this.tileOffset = 65536;
         this.tileMapsString = "";
         this.tilesetsString = "";
@@ -76,8 +74,8 @@ class GodotTilemapExporter {
             const tileset = this.map.tilesets[index];
             this.extResourceId = index + 1;
             this.tilesetsIndex.set(tileset.name, this.extResourceId);
-            // noinspection JSUnresolvedVariable
-            let tilesetPath = tileset.asset.fileName.replace(this.projectRoot, "").replace('.tsx', '.tres');
+            // noinspection JSUnresolvedFunction
+            let tilesetPath = getResPath(this.map.property("projectRoot"), this.map.property("relativePath"), tileset.asset.fileName.replace('.tsx', '.tres'));
             this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "TileSet");
         }
 
@@ -132,7 +130,8 @@ class GodotTilemapExporter {
                         this.extResourceId = this.extResourceId + 1;
                         textureResourceId = this.extResourceId;
                         this.tilesetsIndex.set(tilesetsIndexKey, this.extResourceId);
-                        let tilesetPath = object.tile.tileset.image.replace(this.projectRoot, "");
+                        // noinspection JSUnresolvedFunction
+                        let tilesetPath = getResPath(this.map.property("projectRoot"), this.map.property("relativePath"), object.tile.tileset.image);
                         this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "Texture");
                     } else {
                         textureResourceId = this.tilesetsIndex.get(tilesetsIndexKey);
