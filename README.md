@@ -57,21 +57,42 @@ If you prefer watching check the video in YouTube:
 
 [How to export from Tiled To Godot 3.2](https://youtu.be/4jSFAXIa_Lo)
 
+The exporter needs to know how to set resource paths correctly for Godot before exporting. There are several ways to do this:
+
+- If your Tiled files exist in your Godot project structure alongside the exported files, the exporter can automatically determine the resource paths. There is also the option to use the `projectRoot` custom property if needed.
+- If your Tiled files exist outside your Godot project structure, you will need to set the `relativePath` custom property so the exporter can determine resource paths.
+
+**_!!! Pay attention to the "/" instead of standard windows "\\". Single Backslash "\\" is used for escaping special symbols._**
+
+### Setting relativePath
+
+The custom property `relativePath : string` contains the relative path to the exported files from the Godot project root.
+The value of `relativePath` is transformed to a resource path which Godot uses.
+
+* When placed on a Tiled TileMap (.tmx) object, it will define where the Tileset objects (.tres) are located in the exported TileMap (.tscn).
+* When placed on a Tiled TileSet (.tsx) object, it will define where the Image is located in the exported TileMap (.tres).
+
+Example:
+If the location of an exported tileset is: `C:/project/maps/level1/tileset.tres`
+Then the `relativePath` custom property would be: `/maps/level1`
+
 ### Setting projectRoot `res://`
 
-The exporter needs to know where `res://` is. By default, it's in the same directory where the Tiled files are being saved.
-You can override this path with a custom property `projectRoot : string` that is either relative to the file you are exporting (starting with a `.`), or absolute path,
-Either way the value of projectRoot is transformed to a resource path which Godot use.
+The exporter needs to know where `res://` is so when you export to a subfolder in your Godot project all the relative paths for the resources `(res://)` are set correctly and relative to the project root. `res://` is equivalent to the location of `project.godot` in your Godot project.
 
-* When placed on a Tiled TileMap (.tmx) object it will define where the Tileset objects (.tres) are located in the exported TileMap (.tscn).
-* When placed on a Tiled TileSet (.tsx) object it will define where the Image is located in the exported TileMap (.tres).
+**By default, the exporter expects the Tiled files to be saved in a subfolder of your Godot project next to the exported files and will determine the project root automatically. Setting `projectRoot` is no longer required in this scenario.**
 
-**_!!! Pay attention to the "/" instead of standard windows "\\".
-Single Backslash "\\" is used for escaping special symbols._**
+If needed, you can override this path with a custom property `projectRoot : string` that is either relative to the file you are exporting (starting with a `.`) or an absolute path.
+Either way, the value of `projectRoot` is transformed to the `res://` resource path which Godot uses and should be equivalent to the location of `project.godot`.
 
-This is needed so when you export to a subfolder in your Godot project all the relative
-paths for the resources `(res://)` are set correctly and relative to the custom property
-you've added `"projectRoot"`;
+* When placed on a Tiled TileMap (.tmx) object it will be used as the root to determine the relative resource path to the Tileset objects (.tres) used in the exported TileMap (.tscn).
+* When placed on a Tiled TileSet (.tsx) object it will be used as the root to determine the relative resource path to the Image used in the exported TileMap (.tres).
+
+Example:
+If the location of an exported tileset is: `C:/project/maps/level1/tileset.tres`
+Then the `projectRoot` custom property would be: `C:/project`
+
+### Exporting to Godot
 
 If everything is fine when you go to _File -> Export As_, a new option should exist:
 

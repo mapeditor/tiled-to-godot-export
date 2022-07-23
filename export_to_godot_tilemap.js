@@ -74,10 +74,9 @@ class GodotTilemapExporter {
             const tileset = this.map.tilesets[index];
             this.extResourceId = index + 1;
             this.tilesetsIndex.set(tileset.name, this.extResourceId);
-            // noinspection JSUnresolvedVariable
-            let tilesetPath = getResPath(this.map.property("projectRoot"), tileset.asset.fileName);
-            let tilesetName = FileInfo.fileName(tileset.asset.fileName).replace('.tsx', '.tres');
-            this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, FileInfo.joinPaths(tilesetPath, tilesetName), "TileSet");
+            // noinspection JSUnresolvedFunction
+            let tilesetPath = getResPath(this.map.property("projectRoot"), this.map.property("relativePath"), tileset.asset.fileName.replace('.tsx', '.tres'));
+            this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "TileSet");
         }
 
     }
@@ -131,9 +130,9 @@ class GodotTilemapExporter {
                         this.extResourceId = this.extResourceId + 1;
                         textureResourceId = this.extResourceId;
                         this.tilesetsIndex.set(tilesetsIndexKey, this.extResourceId);
-                        let tileImagePath = getResPath(this.map.property("projectRoot"), object.tile.tileset.image);
-                        let tileImageName = FileInfo.fileName(object.tile.tileset.image);
-                        this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, FileInfo.joinPaths(tileImagePath, tileImageName), "Texture");
+                        // noinspection JSUnresolvedFunction
+                        let tilesetPath = getResPath(this.map.property("projectRoot"), this.map.property("relativePath"), object.tile.tileset.image);
+                        this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "Texture");
                     } else {
                         textureResourceId = this.tilesetsIndex.get(tilesetsIndexKey);
                     }
