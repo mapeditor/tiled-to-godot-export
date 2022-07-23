@@ -49,3 +49,10 @@ Desktop.ini
 *.log*
 
 /.idea/
+
+######################
+# NPM
+######################
+
+/node_modules/
+package-lock.json
