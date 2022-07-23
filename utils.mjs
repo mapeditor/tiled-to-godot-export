@@ -3,10 +3,10 @@ var Flatted=function(a,l){return{parse:function(n,t){var e=JSON.parse(n,i).map(f
 
 var log = console.log.bind(console);
 
-function logf(data) {
+export function logf(data) {
   console.log(Flatted.stringify(data));
 }
-function logk(data) {
+export function logk(data) {
   console.log(Object.keys(data));
 }
 
@@ -24,7 +24,7 @@ function logk(data) {
  * @param {string} outputPath full path and name of destination file. Ex: 'C:/project/maps/level1/tileset.tres'
  * @returns {string} full relative path to file to be included in a 'res://' path. Ex: 'maps/level1/tileset.tres'
  */
-function getResPath(projectRoot, relativePath, outputPath) {
+export function getResPath(projectRoot, relativePath, outputPath) {
   let fullResPath = ''
   if (relativePath) {
     // Replace all backslashes with forward slashes
@@ -78,7 +78,7 @@ function getResPath(projectRoot, relativePath, outputPath) {
  * tile spacing (padding between individual tiles).
  * @returns {number}
  */
-function getTilesetColumns(tileset) {
+export function getTilesetColumns(tileset) {
   // noinspection JSUnresolvedVariable
   const imageWidth = tileset.imageWidth + tileset.tileSpacing - tileset.margin
   const tileWidth = tileset.tileWidth + tileset.tileSpacing
@@ -91,7 +91,7 @@ function getTilesetColumns(tileset) {
 /**
  * @param {string} str comma separated items
  */
-function splitCommaSeparated(str) {
+export function splitCommaSeparated(str) {
   if (!str) {
     return undefined;
   }
@@ -114,7 +114,7 @@ function splitCommaSeparated(str) {
             }
  *         ```
  */
-function stringifyNode(nodeProperties, contentProperties = {}, metaProperties = {}) {
+export function stringifyNode(nodeProperties, contentProperties = {}, metaProperties = {}) {
   let str = '\n';
   str += '[node';
   for (const [key, value] of Object.entries(nodeProperties)) {
@@ -155,7 +155,7 @@ function stringifyNode(nodeProperties, contentProperties = {}, metaProperties = 
  * @param {bool} quote
  * @param {bool} spaces
  */
-function stringifyKeyValue(key, value, quoteKey, quoteValue, spaces, separator = "=") {
+export function stringifyKeyValue(key, value, quoteKey, quoteValue, spaces, separator = "=") {
   // flatten arrays
   if (Array.isArray(value)) {
     value = '[\n"' + value.join('","') + '",\n]';

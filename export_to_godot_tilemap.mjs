@@ -1,6 +1,15 @@
 /*global tiled, TextFile */
+
+import { stringifyKeyValue, getResPath, stringifyNode, splitCommaSeparated, getTilesetColumns } from './utils';
+
 class GodotTilemapExporter {
 
+    /**
+     * Constructs a new instance of the tilemap exporter
+     *
+     * @param {TileMap} map - The tilemap to export
+     * @param {string} fileName - The path where the user has chosen to export the tilemap
+     */
     // noinspection DuplicatedCode
     constructor(map, fileName) {
         this.map = map;
@@ -15,6 +24,7 @@ class GodotTilemapExporter {
         /**
          * Tiled doesn't have tileset ID so we create a map
          * Tileset name to generated tilesetId.
+         * @type {Map<string, number>}
          */
         this.tilesetsIndex = new Map();
 
@@ -40,7 +50,7 @@ class GodotTilemapExporter {
      *
      * @param {string} type the type of subresource
      * @param {object} contentProperties key:value map of properties
-     * @returns {int} the created sub resource id
+     * @returns {number} the created sub resource id
      */
     addSubResource(type, contentProperties) {
         const id = this.subResourceId++;
@@ -64,10 +74,8 @@ class GodotTilemapExporter {
      * Godot supports several image textures per tileset but Tiled Editor doesn't.
      * Tiled editor supports only one tile
      * sprite image per tileset.
-     * @returns {string}
      */
     setTilesetsString() {
-
         // noinspection JSUnresolvedVariable
         for (let index = 0; index < this.map.tilesets.length; ++index) {
             // noinspection JSUnresolvedVariable
@@ -78,7 +86,6 @@ class GodotTilemapExporter {
             let tilesetPath = getResPath(this.map.property("projectRoot"), this.map.property("relativePath"), tileset.asset.fileName.replace('.tsx', '.tres'));
             this.tilesetsString += this.getTilesetResourceTemplate(this.extResourceId, tilesetPath, "TileSet");
         }
-
     }
 
     /**
@@ -96,6 +103,12 @@ class GodotTilemapExporter {
         }
     }
 
+    /**
+     * Export a layer in the tilemap
+     * @param {TileLayer} layer - The layer to export
+     * @param {number} mode - The layer mode/orientation. Currently only 1 (Isometric) is supported.
+     * @param {string} layer_parent - The path of the parent layer
+     */
     handleLayer(layer, mode, layer_parent) {
         // noinspection JSUnresolvedVariable
         if (layer.isTileLayer) {
@@ -110,6 +123,7 @@ class GodotTilemapExporter {
                     this.tileMapsString += this.getTileMapTemplate(tileMapName, mode, ld.tilesetID, ld.poolIntArrayString, layer, layer_parent);
                 }
             }
+
         } else if (layer.isObjectLayer) {
             // create layer
             this.tileMapsString += stringifyNode({
@@ -278,6 +292,7 @@ class GodotTilemapExporter {
      * It's important to not use more than one tileset for a layer.
      * Otherwise the tiles from the second layer are going to be displayed incorrectly as tiles form the first
      * or with a wrong index leading to crash on export.
+     * @param {TileLayer} layer - The target layer
      * @returns {{tilesetID: *, poolIntArrayString: string, layerName: *}}
      */
     getLayerData(layer) {
@@ -368,6 +383,11 @@ class GodotTilemapExporter {
         return tilesetList;
     }
 
+    /**
+     * Finds the id of a tileset
+     * @param {Tileset} tileset - The tileset for which to find the id
+     * @returns {number} - The id of the tileset
+     */
     getTilesetIDByTileset(tileset) {
         return this.tilesetsIndex.get(tileset.name);
     }

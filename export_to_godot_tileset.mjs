@@ -1,4 +1,7 @@
 /*global tiled, TextFile */
+
+import { getResPath, getTilesetColumns } from './utils';
+
 class GodotTilesetExporter {
 
     // noinspection DuplicatedCode
