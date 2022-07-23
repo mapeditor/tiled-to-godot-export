@@ -4,6 +4,11 @@ import { getResPath, stringifyKeyValue, stringifyNode, splitCommaSeparated, getT
 class GodotTilemapExporter {
 
     // noinspection DuplicatedCode
+    /**
+     * Constructs a new instance of the tilemap exporter
+     * @param {TileMap} map the tilemap to export
+     * @param {string} fileName path of the file the tilemap should be exported to
+     */
     constructor(map, fileName) {
         this.map = map;
         this.fileName = fileName;
@@ -66,7 +71,6 @@ class GodotTilemapExporter {
      * Godot supports several image textures per tileset but Tiled Editor doesn't.
      * Tiled editor supports only one tile
      * sprite image per tileset.
-     * @returns {string}
      */
     setTilesetsString() {
 
@@ -98,6 +102,12 @@ class GodotTilemapExporter {
         }
     }
 
+    /**
+     * Handle exporting a single layer
+     * @param {Layer} layer the target layer
+     * @param {number} mode the layer mode
+     * @param {string} layer_parent path of the parent of the layer
+     */
     handleLayer(layer, mode, layer_parent) {
         // noinspection JSUnresolvedVariable
         if (layer.isTileLayer) {
@@ -246,6 +256,12 @@ class GodotTilemapExporter {
         }
     }
 
+    /**
+     * Prepare properties for a Godot node
+     * @param {TiledObjectProperties} object_props Properties from the layer
+     * @param {TiledObjectProperties} set_props Additional properties
+     * @returns {TiledObjectProperties} the merged property set for the node
+     */
     merge_properties(object_props, set_props){
         for (const [key, value] of Object.entries(object_props)) {
             if(key.startsWith("godot:node:")){
@@ -255,7 +271,12 @@ class GodotTilemapExporter {
 
         return set_props;
     }
-    
+
+    /**
+     * Prepare the meta properties for a Godot node
+     * @param {TiledObjectProperties} object_props
+     * @returns {object} the meta properties
+     */
     meta_properties(object_props){
         let results = {};
         for (const [key, value] of Object.entries(object_props)) {
@@ -276,11 +297,23 @@ class GodotTilemapExporter {
     }
 
     /**
-     * Creates all the tiles coordinate for the current layer and picks the first tileset which is used.
-     * It's important to not use more than one tileset for a layer.
-     * Otherwise the tiles from the second layer are going to be displayed incorrectly as tiles form the first
-     * or with a wrong index leading to crash on export.
-     * @returns {{tilesetID: *, poolIntArrayString: string, layerName: *}}
+     * @typedef {{
+     *      tileset: Tileset,
+     *      tilesetID: number,
+     *      tilesetColumns: number,
+     *      layer: Layer,
+     *      isEmpty: boolean,
+     *      poolIntArrayString: string,
+     *      parent: string
+     * }} LayerData
+     */
+
+    /**
+     * Creates all the tiles coordinates for a layer.
+     * Each element in the retuned array corresponds to the tile coordinates for each of
+     * the tilesets used in the layer.
+     * @param {TileLayer} layer the target layer
+     * @returns {LayerData[]} the data about the tilesets used in the target layer
      */
     getLayerData(layer) {
         // noinspection JSUnresolvedVariable
@@ -374,6 +407,11 @@ class GodotTilemapExporter {
         return this.tilesetsIndex.get(tileset.name);
     }
 
+    /**
+     * Calculate the second parameter for the given cell
+     * @param {cell} cell the target cell
+     * @returns {number} the second parameter
+     */
     getSecondParam(cell) {
         /**
          * no rotation or flips
@@ -523,6 +561,12 @@ ${this.tileMapsString}
 
     /**
      * Template for a tilemap node
+     * @param {string} tileMapName
+     * @param {number} mode
+     * @param {number} tilesetID
+     * @param {string} poolIntArrayString
+     * @param {Layer} layer
+     * @param {string} parent
      * @returns {string}
      */
     getTileMapTemplate(tileMapName, mode, tilesetID, poolIntArrayString, layer, parent = ".") {
