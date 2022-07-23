@@ -263,9 +263,16 @@ const customTilesetFormat = {
     name: "Godot Tileset format",
     extension: "tres",
 
+    /**
+     * Tileset exporter function
+     * @param {Tileset} tileset the tileset to export
+     * @param {string} fileName path of the file where to export the tileset
+     * @returns {undefined}
+     */
     write: function (tileset, fileName) {
         const exporter = new GodotTilesetExporter(tileset, fileName);
         exporter.write();
+        return undefined;
     }
 };
 

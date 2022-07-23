@@ -607,9 +607,16 @@ const customTileMapFormat = {
     name: "Godot Tilemap format",
     extension: "tscn",
 
+    /**
+     * Map exporter function
+     * @param {TileMap} map the map to export
+     * @param {string} fileName path of the file where to export the map
+     * @returns {undefined}
+     */
     write: function (map, fileName) {
         const exporter = new GodotTilemapExporter(map, fileName);
         exporter.write();
+        return undefined;
     }
 };
 
