@@ -1,12 +1,13 @@
 /*! (c) 2018, Andrea Giammarchi, (ISC) */
 var Flatted=function(a,l){return{parse:function(n,t){var e=JSON.parse(n,i).map(f),r=e[0],u=t||s,c="object"==typeof r&&r?function u(c,f,n,i){return Object.keys(n).reduce(function(n,t){var e=n[t];if(e instanceof a){var r=c[e];"object"!=typeof r||f.has(r)?n[t]=i.call(n,t,r):(f.add(r),n[t]=i.call(n,t,u(c,f,r,i)))}else n[t]=i.call(n,t,e);return n},n)}(e,new Set,r,u):r;return u.call({"":c},"",c)},stringify:function(n,e,t){function r(n,t){if(u)return u=!u,t;var e=a.call(this,n,t);switch(typeof e){case"object":if(null===e)return e;case l:return c.get(e)||p(c,f,e)}return e}for(var u,c=new Map,f=[],i=[],a=e&&typeof e==typeof f?function(n,t){if(""===n||-1<e.indexOf(n))return t}:e||s,o=+p(c,f,a.call({"":n},"",n));o<f.length;o++)u=!0,i[o]=JSON.stringify(f[o],r,t);return"["+i.join(",")+"]"}};function s(n,t){return t}function p(n,t,e){var r=a(t.push(e)-1);return n.set(e,r),r}function f(n){return n instanceof a?a(n):n}function i(n,t){return typeof t==l?new a(t):t}}(String,"string");
 
-var log = console.log.bind(console);
+const log = console.log.bind(console);
 
-function logf(data) {
+export function logf(data) {
   console.log(Flatted.stringify(data));
 }
-function logk(data) {
+
+export function logk(data) {
   console.log(Object.keys(data));
 }
 
@@ -24,7 +25,7 @@ function logk(data) {
  * @param {string} outputPath full path and name of destination file. Ex: 'C:/project/maps/level1/tileset.tres'
  * @returns {string} full relative path to file to be included in a 'res://' path. Ex: 'maps/level1/tileset.tres'
  */
-function getResPath(projectRoot, relativePath, outputPath) {
+export function getResPath(projectRoot, relativePath, outputPath) {
   let fullResPath = ''
   if (relativePath) {
     // Replace all backslashes with forward slashes
@@ -78,7 +79,7 @@ function getResPath(projectRoot, relativePath, outputPath) {
  * tile spacing (padding between individual tiles).
  * @returns {number}
  */
-function getTilesetColumns(tileset) {
+export function getTilesetColumns(tileset) {
   // noinspection JSUnresolvedVariable
   const imageWidth = tileset.imageWidth + tileset.tileSpacing - tileset.margin
   const tileWidth = tileset.tileWidth + tileset.tileSpacing
@@ -91,7 +92,7 @@ function getTilesetColumns(tileset) {
 /**
  * @param {string} str comma separated items
  */
-function splitCommaSeparated(str) {
+export function splitCommaSeparated(str) {
   if (!str) {
     return undefined;
   }
@@ -114,7 +115,7 @@ function splitCommaSeparated(str) {
             }
  *         ```
  */
-function stringifyNode(nodeProperties, contentProperties = {}, metaProperties = {}) {
+export function stringifyNode(nodeProperties, contentProperties = {}, metaProperties = {}) {
   let str = '\n';
   str += '[node';
   for (const [key, value] of Object.entries(nodeProperties)) {
@@ -155,7 +156,7 @@ function stringifyNode(nodeProperties, contentProperties = {}, metaProperties = 
  * @param {bool} quote
  * @param {bool} spaces
  */
-function stringifyKeyValue(key, value, quoteKey, quoteValue, spaces, separator = "=") {
+export function stringifyKeyValue(key, value, quoteKey, quoteValue, spaces, separator = "=") {
   // flatten arrays
   if (Array.isArray(value)) {
     value = '[\n"' + value.join('","') + '",\n]';

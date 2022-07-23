@@ -1,3 +1,5 @@
+import { getResPath, getTilesetColumns } from './utils.mjs';
+
 /*global tiled, TextFile */
 class GodotTilesetExporter {
 
