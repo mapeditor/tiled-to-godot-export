@@ -299,7 +299,7 @@ class GodotTilemapExporter {
     /**
      * @typedef {{
      *      tileset: Tileset,
-     *      tilesetID: number,
+     *      tilesetID: number?,
      *      tilesetColumns: number,
      *      layer: Layer,
      *      isEmpty: boolean,
@@ -403,6 +403,11 @@ class GodotTilemapExporter {
         return tilesetList;
     }
 
+    /**
+     * Find the id of a tileset by its name
+     * @param {Tileset} tileset The tileset to find the id of
+     * @returns {string|undefined} the id of the tileset if found, undefined otherwise
+     */
     getTilesetIDByTileset(tileset) {
         return this.tilesetsIndex.get(tileset.name);
     }
