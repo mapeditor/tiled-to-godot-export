@@ -257,7 +257,7 @@ class GodotTilemapExporter {
     /**
      * Prepare properties for a Godot node
      * @param {TiledObjectProperties} object_props Properties from the layer
-     * @param {TiledObjectProperties} set_props Additional properties
+     * @param {TiledObjectProperties} set_props The base properties for the node
      * @returns {TiledObjectProperties} the merged property set for the node
      */
     merge_properties(object_props, set_props){
