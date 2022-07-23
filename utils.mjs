@@ -119,16 +119,16 @@ export function stringifyNode(nodeProperties, contentProperties = {}, metaProper
   str += '[node';
   for (const [key, value] of Object.entries(nodeProperties)) {
     if (value !== undefined) {
-      str += ' ' + this.stringifyKeyValue(key, value, false, true, false);
+      str += ' ' + stringifyKeyValue(key, value, false, true, false);
     }
   }
   str += ']\n';
   for (const [key, value] of Object.entries(contentProperties)) {
     if (value !== undefined) {
-      str += this.stringifyKeyValue(key, value, false, false, true) + '\n';
+      str += stringifyKeyValue(key, value, false, false, true) + '\n';
     }
   }
-  mProps = Object.entries(metaProperties)
+  const mProps = Object.entries(metaProperties)
   if(mProps.length > 0) {
     str += '__meta__ = {\n';
     var count = 0;
@@ -140,7 +140,7 @@ export function stringifyNode(nodeProperties, contentProperties = {}, metaProper
         if(typeof value === 'number' || typeof value === 'boolean') {
             quoteValue = false;
         }
-        str += this.stringifyKeyValue(key, value, true, quoteValue, true, ":");
+        str += stringifyKeyValue(key, value, true, quoteValue, true, ":");
     }
     str += '\n}\n';
   }
