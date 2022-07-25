@@ -2,9 +2,9 @@
 
 Tiled plugins for exporting Tilemaps and Tilesets in Godot 3.2 format
 
- - export_to_godot_tilemap.js
- - export_to_godot_tileset.js
- - utils.js
+ - export_to_godot_tilemap.mjs
+ - export_to_godot_tileset.mjs
+ - utils.mjs
 
 The plugin requires Tiled version 1.3.4 or newer.
 
@@ -232,7 +232,7 @@ If you are using the plugins and have any problems, feature requests or have fou
 
 #### Customizing or contributing tips
 
-If you want to debug something you can use the utils.js
+If you want to debug something you can use the utils.mjs
 There are three useful functions:
  - log() - shortcut for the console.log (infinite parameters)
  - logf() - logs with flattening circular objects (single parameter)
