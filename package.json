@@ -2,7 +2,7 @@
   "name": "tiled-to-godot-export",
   "version": "1.8.0",
   "description": "Tiled plugins for exporting Tilemaps and Tilesets in Godot 3.x format",
-  "main": "export_to_godot_tilemap.js",
+  "main": "export_to_godot_tilemap.mjs",
   "repository": {
     "type": "git",
     "url": "git@github.com:mapeditor/tiled-to-godot-export.git"
