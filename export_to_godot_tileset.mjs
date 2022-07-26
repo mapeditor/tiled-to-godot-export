@@ -4,6 +4,11 @@ import { getResPath, getTilesetColumns } from './utils.mjs';
 class GodotTilesetExporter {
 
     // noinspection DuplicatedCode
+    /**
+     * Constructs a new instance of the tileset exporter
+     * @param {Tileset} tileset the tileset to export
+     * @param {string} fileName path of the file the tileset should be exported to
+     */
     constructor(tileset, fileName) {
         this.tileset = tileset;
         this.fileName = fileName;
@@ -89,6 +94,12 @@ class GodotTilesetExporter {
         this.shapes = this.shapes.replace(/,\s*$/, "");
     }
 
+    /**
+     * Exports the collision shape for an object
+     * @param {MapObject} object the object to export collision shape from
+     * @param {Tile} tile the tile the object is part of
+     * @param {point} autotileCoordinates autotile coordinates for the tile
+     */
     exportCollisions(object, tile, autotileCoordinates) {
         // noinspection JSUnresolvedVariable
         if (object.polygon.length > 0) {
@@ -100,6 +111,12 @@ class GodotTilesetExporter {
         }
     }
 
+    /**
+     * Exports the navigation shapes for an object
+     * @param {MapObject} object the object to export navigation shapes from
+     * @param {number} id the navigation shape id
+     * @param {point} autotileCoordinates autotile coordinates for the tile
+     */
     exportNavigations(object, id, autotileCoordinates) {
         if (object.polygon.length > 0) {
             this.shapesResources += this.getNavigationShapePolygon(id, object);
@@ -110,6 +127,11 @@ class GodotTilesetExporter {
         }
     }
 
+    /**
+     * Exports the shape resources for a tile
+     * @param {Tile} tile the target tile
+     * @param {point} autotileCoordinates autotile coordinates for the tile
+     */
     exportShapes(tile, autotileCoordinates) {
         if (this.firstShapeID === "") {
             this.firstShapeID = 'SubResource( ' + tile.id + ' )';
@@ -121,6 +143,11 @@ class GodotTilesetExporter {
         );
     }
 
+    /**
+     * Export a single navigation shape
+     * @param {number} id id of the shape
+     * @param {point} autotileCoordinates autotile coordinates for the tile
+     */
     exportNavigationShape(id, autotileCoordinates) {
         this.navpolyMap.push(`Vector2( ${autotileCoordinates.x}, ${autotileCoordinates.y} )`)
         this.navpolyMap.push(`SubResource( ${id} )`)
@@ -236,9 +263,16 @@ const customTilesetFormat = {
     name: "Godot Tileset format",
     extension: "tres",
 
+    /**
+     * Tileset exporter function
+     * @param {Tileset} tileset the tileset to export
+     * @param {string} fileName path of the file where to export the tileset
+     * @returns {undefined}
+     */
     write: function (tileset, fileName) {
         const exporter = new GodotTilesetExporter(tileset, fileName);
         exporter.write();
+        return undefined;
     }
 };
 

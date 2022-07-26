@@ -153,8 +153,10 @@ export function stringifyNode(nodeProperties, contentProperties = {}, metaProper
  *
  * @param {string} key
  * @param {string|array} value
- * @param {bool} quote
- * @param {bool} spaces
+ * @param {boolean} quoteKey
+ * @param {boolean} quoteValue
+ * @param {boolean} spaces
+ * @param {string} separator
  */
 export function stringifyKeyValue(key, value, quoteKey, quoteValue, spaces, separator = "=") {
   // flatten arrays
