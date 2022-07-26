@@ -1,3 +1,5 @@
+import { getResPath, stringifyKeyValue, stringifyNode, splitCommaSeparated, getTilesetColumns } from './utils.mjs';
+
 /*global tiled, TextFile */
 class GodotTilemapExporter {
 
