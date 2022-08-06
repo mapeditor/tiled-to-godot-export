@@ -141,8 +141,9 @@ To setup a collision shape for a tile, first edit the tileset in Tiled:
 
 - Select the tile in the tileset file
 - You should see a side panel "Tile Collision Editor", use the menu above it to create a new shape. Use rectangle or polygon only.
+- For a one-way collision, with the Object shape selected set the `Type` or `Class` field to `one-way`.
 
-For navigation, do the same thing, but with the Object shape selected, set the `Type` field to `navigation`.
+For navigation, do the same thing, but with the Object shape selected, set the `Type` or `Class` field to `navigation`.
 
 ## Why use it?
 
@@ -164,7 +165,7 @@ More about my struggles can be read in Tiled Forum or Godot reddit. Check the Co
 - [x] Export collision shapes<sup>*</sup>
 - [ ] Export occluder shapes<sup>*</sup>
 - [x] Export navigation shapes<sup>*</sup>
-- [ ] Support for one-way collision shapes
+- [x] Support for one-way collision shapes
 - [ ] Support for image layers
 - [x] Support for tile objects, which are exported to Godot as Sprite nodes. (Other types of objects are not yet included.)
 - [ ] Full support for object layers, which are exported as StaticBody2D, Area2D or LightOccluder2D for shapes (depending on the type property) and as Sprite for tiles
