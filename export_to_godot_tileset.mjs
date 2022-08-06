@@ -101,13 +101,14 @@ class GodotTilesetExporter {
      * @param {point} autotileCoordinates autotile coordinates for the tile
      */
     exportCollisions(object, tile, autotileCoordinates) {
+        var isOneWay = object.type === "one-way";
         // noinspection JSUnresolvedVariable
         if (object.polygon.length > 0) {
             this.shapesResources += this.getCollisionShapePolygon(tile.id, object);
-            this.exportShapes(tile, autotileCoordinates);
+            this.exportShapes(tile, autotileCoordinates, isOneWay);
         } else if (object.width > 0 && object.height > 0) {
             this.shapesResources += this.getCollisionShapeRectangle(tile.id, object);
-            this.exportShapes(tile, autotileCoordinates);
+            this.exportShapes(tile, autotileCoordinates, isOneWay);
         }
     }
 
@@ -132,13 +133,13 @@ class GodotTilesetExporter {
      * @param {Tile} tile the target tile
      * @param {point} autotileCoordinates autotile coordinates for the tile
      */
-    exportShapes(tile, autotileCoordinates) {
+    exportShapes(tile, autotileCoordinates, isOneWay) {
         if (this.firstShapeID === "") {
             this.firstShapeID = 'SubResource( ' + tile.id + ' )';
         }
         this.shapes += this.getShapesTemplate(
             autotileCoordinates,
-            false,
+            isOneWay,
             tile.id
         );
     }
